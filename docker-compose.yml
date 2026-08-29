@@ -1,0 +1,62 @@
+version: '3.8'
+
+services:
+  # 1. Base de Datos PostgreSQL
+  database:
+    image: postgres:15-alpine
+    container_name: walle_db
+    restart: always
+    environment:
+      POSTGRES_DB: Wall_e
+      POSTGRES_USER: Osiris
+      POSTGRES_PASSWORD: Alfrezzy
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+      - shared_backups:/var/backups/walle
+
+  # 2. Servidor Backend en Java (Spring Boot) - COMENTADO TEMPORALMENTE
+  # backend:
+  #   build:
+  #     context: ./backend_java
+  #     dockerfile: Dockerfile
+  #   container_name: walle_backend
+  #   restart: always
+  #   ports:
+  #     - "8080:8080"
+  #   environment:
+  #     SPRING_DATASOURCE_URL: jdbc:postgresql://database:5432/walle_db
+  #     SPRING_DATASOURCE_USERNAME: Osiris
+  #     SPRING_DATASOURCE_PASSWORD: Alfrezzy
+  #   depends_on:
+  #     - database
+  #   volumes:
+  #     - shared_backups:/app/backups
+
+  # 3. Servicio de Visión y Red Neuronal (Python) - COMENTADO TEMPORALMENTE
+  # ai-engine:
+  #   build:
+  #     context: ./vision
+  #     dockerfile: Dockerfile
+  #   container_name: walle_ai
+  #   restart: always
+  #   ports:
+  #     - "5000:5000"
+  #   depends_on:
+  #     - backend
+
+  # 4. Frontend Web (Servidor Nginx)
+  frontend:
+    build:
+      context: ./frontend_web
+      dockerfile: Dockerfile
+    container_name: walle_web
+    restart: always
+    ports:
+      - "80:80"
+
+volumes:
+  db_data:
+  shared_backups:
+    driver: local
