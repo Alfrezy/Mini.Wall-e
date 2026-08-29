@@ -1,0 +1,18 @@
+# Dataset (No subir miles de fotos)
+dataset_fotos/
+
+# Java Spring Boot
+backend_java/target/
+backend_java/.mvn/
+backend_java/mvnw*
+*.jar
+
+# C++ / ESP32
+*.bin
+*.elf
+*.hex
+build/
+
+# Docker y SO
+postgres_data/
+.DS_Store

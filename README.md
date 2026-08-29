@@ -8,4 +8,24 @@ EcoWallE es una plataforma robótica autónoma inspirada en Wall-E que combina t
 
 ## 🏗️ Arquitectura del Sistema
 
-El sistema utiliza un enfoque distribuido multinivel (*Multi-Language Ecosystem*) para maximizar el rendimiento del hardware y la flexibilidad en el procesamiento de Inteligencia Artificial:
+El sistema utiliza un enfoque distribuido multinivel (*Multi-Language Ecosystem*) para maximizar el rendimiento del hardware y la flexibilidad en el procesamiento de Inteligencia Artificial.
+
+## 🎮 Panel de Control Web y Comandos
+
+La interfaz gráfica cuenta con un panel de control interactivo optimizado tanto para clics con el ratón como para control directo mediante el teclado de tu computadora.
+
+### Mapeo de Teclado y Controles:
+* **Movimiento (Orugas):** Teclas **`W`**, **`A`**, **`S`**, **`D`**. *(Nota: El robot se detiene automáticamente en cuanto dejas de presionar la tecla de dirección).*
+* **Cámara (Servos):** Teclas **`Q`** (Arriba) / **`E`** (Abajo).
+* **Brazos:** Teclas **`Z`** (Brazo Izquierdo) / **`X`** (Brazo Derecho).
+* **Dataset / Captura:** Tecla **`F`** para capturar fotogramas destinados al entrenamiento de la red neuronal.
+
+---
+
+## 🚀 Tecnologías Utilizadas
+
+* **Backend:** Java (HTTP Server nativo / Spring Boot base).
+* **Base de Datos:** PostgreSQL 15+.
+* **Contenedores:** Docker & Docker Compose.
+* **Frontend:** HTML5, CSS3, JavaScript (Nginx).
+* **Hardware de Video:** ESP32-CAM.
