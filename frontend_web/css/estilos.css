@@ -1,0 +1,300 @@
+body {
+    background-color: #0d0d0d;
+    color: #00ff66;
+    font-family: 'Courier New', Courier, monospace;
+    text-align: center;
+    margin: 0;
+    padding: 20px;
+}
+
+h1 {
+    color: #ff0055;
+    text-shadow: 0 0 10px #ff0055;
+}
+
+hr {
+    border: 1px dashed #00ff66;
+    width: 80%;
+    margin-bottom: 30px;
+}
+
+.main-container {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 40px;
+    flex-wrap: wrap;
+}
+
+/* Sección de Video */
+.video-box {
+    border: 2px solid #ff0055;
+    box-shadow: 0 0 15px #ff0055;
+    width: 640px;
+    height: 480px;
+    background: #111;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ff0055;
+    font-size: 20px;
+}
+
+/* Panel del Control / Gamepad */
+.controller-panel {
+    border: 2px solid #00ff66;
+    box-shadow: 0 0 15px #00ff66;
+    padding: 20px;
+    border-radius: 10px;
+    background: #121212;
+    width: 320px;
+    text-align: left;
+}
+
+.controller-panel h3 {
+    color: #ff0055;
+    margin-top: 0;
+    text-align: center;
+}
+
+/* Estilo tipo Mando de Consola para los botones de movimiento */
+.dpad {
+    display: grid;
+    grid-template-columns: repeat(3, 70px);
+    grid-template-rows: repeat(3, 70px);
+    gap: 5px;
+    justify-content: center;
+    margin: 20px 0;
+}
+
+.btn-control {
+    background-color: #1a1a1a;
+    color: #00ff66;
+    border: 2px solid #00ff66;
+    font-size: 20px;
+    font-weight: bold;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.1s ease;
+    box-shadow: 0 4px 0 #005522;
+}
+
+/* Efecto visual cuando el botón es presionado (clic o tecla) */
+.btn-control:active, .btn-control.pressed {
+    background-color: #00ff66;
+    color: #0d0d0d;
+    transform: translateY(4px);
+    box-shadow: 0 0 0 #005522;
+}
+
+/* Posicionamiento en la cuadrícula estilo cruceta */
+.btn-up { grid-column: 2; grid-row: 1; }
+.btn-left { grid-column: 1; grid-row: 2; }
+.btn-center { 
+    grid-column: 2; 
+    grid-row: 2; 
+    background-color: #331122; 
+    border-color: #ff0055; 
+    color: #ff0055; 
+    box-shadow: 0 4px 0 #550022; 
+}
+.btn-center:active, .btn-center.pressed { 
+    background-color: #ff0055; 
+    color: #fff; 
+    box-shadow: 0 0 0 #550022; 
+}
+.btn-right { grid-column: 3; grid-row: 2; }
+.btn-down { grid-column: 2; grid-row: 3; }
+
+.btn-action {
+    width: 100%;
+    padding: 12px;
+    background-color: #1a1a1a;
+    color: #00ff66;
+    border: 2px solid #00ff66;
+    border-radius: 6px;
+    cursor: pointer;
+    font-family: 'Courier New', Courier, monospace;
+    font-weight: bold;
+    margin-top: 10px;
+    box-shadow: 0 4px 0 #005522;
+    transition: all 0.1s ease;
+}
+
+.btn-action:active, .btn-action.pressed {
+    background-color: #00ff66;
+    color: #0d0d0d;
+    transform: translateY(4px);
+    box-shadow: 0 0 0 #005522;
+}
+
+.info-text {
+    font-size: 13px;
+    color: #aaa;
+    margin-top: 10px;
+    line-height: 1.4;
+}
+
+body {
+    background-color: #0d0d0d;
+    color: #00ff66;
+    font-family: 'Courier New', Courier, monospace;
+    text-align: center;
+    margin: 0;
+    padding: 20px;
+}
+
+h1 {
+    color: #ff0055;
+    text-shadow: 0 0 10px #ff0055;
+}
+
+hr {
+    border: 1px dashed #00ff66;
+    width: 80%;
+    margin-bottom: 30px;
+}
+
+.main-container {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 40px;
+    flex-wrap: wrap;
+}
+
+/* Sección de Video */
+.video-box {
+    border: 2px solid #ff0055;
+    box-shadow: 0 0 15px #ff0055;
+    width: 640px;
+    height: 480px;
+    background: #111;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ff0055;
+    font-size: 20px;
+}
+
+/* Panel del Control / Gamepad */
+.controller-panel {
+    border: 2px solid #00ff66;
+    box-shadow: 0 0 15px #00ff66;
+    padding: 20px;
+    border-radius: 10px;
+    background: #121212;
+    width: 340px;
+    text-align: left;
+}
+
+.controller-panel h3 {
+    color: #ff0055;
+    margin-top: 0;
+    text-align: center;
+}
+
+/* Estilo tipo Mando de Consola para los botones de movimiento */
+.dpad {
+    display: grid;
+    grid-template-columns: repeat(3, 70px);
+    grid-template-rows: repeat(3, 70px);
+    gap: 5px;
+    justify-content: center;
+    margin: 15px 0;
+}
+
+.btn-control {
+    background-color: #1a1a1a;
+    color: #00ff66;
+    border: 2px solid #00ff66;
+    font-size: 18px;
+    font-weight: bold;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.1s ease;
+    box-shadow: 0 4px 0 #005522;
+}
+
+/* Efecto visual cuando el botón es presionado (clic o tecla) */
+.btn-control:active, .btn-control.pressed {
+    background-color: #00ff66;
+    color: #0d0d0d;
+    transform: translateY(4px);
+    box-shadow: 0 0 0 #005522;
+}
+
+/* Posicionamiento en la cuadrícula estilo cruceta */
+.btn-up { grid-column: 2; grid-row: 1; }
+.btn-left { grid-column: 1; grid-row: 2; }
+.btn-center { 
+    grid-column: 2; 
+    grid-row: 2; 
+    background-color: #331122; 
+    border-color: #ff0055; 
+    color: #ff0055; 
+    box-shadow: 0 4px 0 #550022; 
+}
+.btn-center:active, .btn-center.pressed { 
+    background-color: #ff0055; 
+    color: #fff; 
+    box-shadow: 0 0 0 #550022; 
+}
+.btn-right { grid-column: 3; grid-row: 2; }
+.btn-down { grid-column: 2; grid-row: 3; }
+
+/* Controles extras para Cámara y Brazos */
+.extra-controls {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.btn-action {
+    width: 100%;
+    padding: 10px;
+    background-color: #1a1a1a;
+    color: #00ff66;
+    border: 2px solid #00ff66;
+    border-radius: 6px;
+    cursor: pointer;
+    font-family: 'Courier New', Courier, monospace;
+    font-weight: bold;
+    font-size: 12px;
+    box-shadow: 0 4px 0 #005522;
+    transition: all 0.1s ease;
+}
+
+.btn-action:active, .btn-action.pressed {
+    background-color: #00ff66;
+    color: #0d0d0d;
+    transform: translateY(4px);
+    box-shadow: 0 0 0 #005522;
+}
+
+.btn-dataset {
+    border-color: #ff0055;
+    color: #ff0055;
+    box-shadow: 0 4px 0 #550022;
+    margin-top: 10px;
+}
+
+.btn-dataset:active, .btn-dataset.pressed {
+    background-color: #ff0055;
+    color: #fff;
+    box-shadow: 0 0 0 #550022;
+}
+
+.info-text {
+    font-size: 12px;
+    color: #aaa;
+    margin-top: 10px;
+    line-height: 1.3;
+}

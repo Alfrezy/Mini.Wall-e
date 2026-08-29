@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Panel de Control - Mini Wall-E</title>
+    <link rel="stylesheet" href="css/estilos.css">
+</head>
+<body>
+
+    <h1>🤖 Mini Wall-E: Panel de Control Manual</h1>
+    <hr>
+
+    <div class="main-container">
+        <!-- Video en vivo -->
+        <div class="video-box" id="videoContainer">
+            <img src="http://192.168.1.51:81/stream" width="640" height="480" alt="Video en vivo Wall-E" style="border:none;" />
+        </div>
+
+        <!-- Panel de control interactivo tipo mando -->
+        <div class="controller-panel">
+            <h3>MANDO DE CONTROL</h3>
+            
+            <div class="dpad">
+                <div></div>
+                <button id="btn-w" class="btn-control btn-up" onmousedown="enviarComandoMovimiento('ADELANTE')" onmouseup="enviarComandoMovimiento('DETENER')">W</button>
+                <div></div>
+                <button id="btn-a" class="btn-control btn-left" onmousedown="enviarComandoMovimiento('IZQUIERDA')" onmouseup="enviarComandoMovimiento('DETENER')">A</button>
+                <button id="btn-s-stop" class="btn-control btn-center" onclick="enviarComandoMovimiento('DETENER')">STOP</button>
+                <button id="btn-d" class="btn-control btn-right" onmousedown="enviarComandoMovimiento('DERECHA')" onmouseup="enviarComandoMovimiento('DETENER')">D</button>
+                <div></div>
+                <button id="btn-s" class="btn-control btn-down" onmousedown="enviarComandoMovimiento('ATRAS')" onmouseup="enviarComandoMovimiento('DETENER')">S</button>
+                <div></div>
+            </div>
+
+            <!-- Botones Extras: Cámara y Brazos -->
+            <div class="extra-controls">
+                <button id="btn-q" class="btn-action" onclick="enviarServo('camara', 120)">Q: Cam Arriba</button>
+                <button id="btn-e" class="btn-action" onclick="enviarServo('camara', 60)">E: Cam Abajo</button>
+                <button id="btn-z" class="btn-action" onclick="enviarServo('brazo_izq', 180)">Z: Brazo Izq</button>
+                <button id="btn-x" class="btn-action" onclick="enviarServo('brazo_der', 180)">X: Brazo Der</button>
+            </div>
+
+            <button id="btn-foto" class="btn-action btn-dataset" onclick="capturarFotoDataset('basura')">📷 CAPTURAR FOTO (DATASET)</button>
+
+            <div class="info-text">
+                <b>Teclado activo:</b><br>
+                • Mover: <b>W, A, S, D</b> (Se detiene al soltar)<br>
+                • Cámara: <b>Q / E</b> | Brazos: <b>Z / X</b><br>
+                • Foto Dataset: <b>F</b>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const URL_BACKEND = "http://localhost:8080/api/robot";
+
+        function enviarComandoMovimiento(direccion) {
+            fetch(`${URL_BACKEND}/mover?direccion=${direccion}`, { method: 'POST' })
+                .catch(err => console.log("Esperando conexión con Java..."));
+        }
+
+        function enviarServo(parte, angulo) {
+            fetch(`${URL_BACKEND}/servo?parte=${parte}&angulo=${angulo}`, { method: 'POST' })
+                .catch(err => console.log("Esperando conexión con Java..."));
+        }
+
+        function capturarFotoDataset(etiqueta) {
+            fetch(`${URL_BACKEND}/capturar-foto?etiqueta=${etiqueta}`, { method: 'POST' })
+                .then(res => res.text())
+                .then(msg => alert(msg))
+                .catch(err => alert("Error al guardar foto en el dataset."));
+        }
+
+        const teclasMapeo = {
+            'w': { btn: 'btn-w', accion: () => enviarComandoMovimiento('ADELANTE') },
+            'a': { btn: 'btn-a', accion: () => enviarComandoMovimiento('IZQUIERDA') },
+            's': { btn: 'btn-s', accion: () => enviarComandoMovimiento('ATRAS') },
+            'd': { btn: 'btn-d', accion: () => enviarComandoMovimiento('DERECHA') },
+            'q': { btn: 'btn-q', accion: () => enviarServo('camara', 120) },
+            'e': { btn: 'btn-e', accion: () => enviarServo('camara', 60) },
+            'z': { btn: 'btn-z', accion: () => enviarServo('brazo_izq', 180) },
+            'x': { btn: 'btn-x', accion: () => enviarServo('brazo_der', 180) },
+            'f': { btn: 'btn-foto', accion: () => capturarFotoDataset('basura') }
+        };
+
+        window.addEventListener('keydown', (e) => {
+            const k = e.key.toLowerCase();
+            if (teclasMapeo[k]) {
+                const item = teclasMapeo[k];
+                const elemento = document.getElementById(item.btn);
+                if (elemento && !elemento.classList.contains('pressed')) {
+                    elemento.classList.add('pressed');
+                    item.accion();
+                }
+            }
+        });
+
+        // Al soltar W, A, S o D se detiene el robot automáticamente
+        window.addEventListener('keyup', (e) => {
+            const k = e.key.toLowerCase();
+            if (teclasMapeo[k]) {
+                const item = teclasMapeo[k];
+                const elemento = document.getElementById(item.btn);
+                if (elemento) {
+                    elemento.classList.remove('pressed');
+                }
+                if (['w', 'a', 's', 'd'].includes(k)) {
+                    enviarComandoMovimiento('DETENER');
+                }
+            }
+        });
+    </script>
+</body>
+</html>
