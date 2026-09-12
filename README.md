@@ -1,24 +1,73 @@
-# Mini.Wall-e
+<div align="center">
 
-> **Sistema Robótico Autónomo de Patrullaje, Recolección de Residuos y Reforestación Urbana**
+# 🤖 MINI WALL·E // CENTRAL SYSTEM UNIT
+### *Transforma tu perfil interactiva de robótica y ciberseguridad*
 
-EcoWallE es una plataforma robótica autónoma inspirada en Wall-E que combina tecnología embebida, procesamiento en el borde, redes neuronales personalizadas y arquitecturas distribuidas. El robot patrulla un entorno delimitado, detecta e identifica basura para su recolección, saluda a transeúntes y realiza tareas de siembra de plantas tras alcanzar metas de limpieza.
+<img src="https://img.shields.io/badge/STATUS-OPERATIONAL-00ff66?style=for-the-badge&logo=probot&logoColor=00ff66" />
+<img src="https://img.shields.io/badge/STACK-JAVA%20%7C%20DOCKER%20%7C%20ESP32-blueviolet?style=for-the-badge" />
+<img src="https://img.shields.io/badge/THEME-HACKER%20%2F%20CYBERPUNK-ff0055?style=for-the-badge" />
+
+</div>
 
 ---
 
-## 🏗️ Arquitectura del Sistema
+## 🖥️ `whoami` // Perfil del Sistema
 
-El sistema utiliza un enfoque distribuido multinivel (*Multi-Language Ecosystem*) para maximizar el rendimiento del hardware y la flexibilidad en el procesamiento de Inteligencia Artificial.
+```ansi
+[0;36mconst[0m [0;33mwall_e_system[0m = {
+    [0;32mname[0m: [0;31m"Mini Wall-E Bot"[0m,
+    [0;32mrole[0m: [0;31m"Autonomous Patrol & Rescue Unit"[0m,
+    [0;32mlocation[0m: [0;31m"Local Network / Docker Environment"[0m,
+    [0;32mcurrently[0m: [0;31m"Building hardware integrations & web interface"[0m,
+    [0;32mstacks[0m: [[0;31m"Java"[0m, [0;31m"Docker"[0m, [0;31m"C++ (Arduino)"[0m, [0;31m"JavaScript"[0m, [0;31m"PostgreSQL"[0m],
+    [0;32mmantra[0m: [0;31m"Make autonomous systems useful, then make them delightful."[0m
+};
+
+```
+
+---
+
+## 🏗️ Arquitectura del Sistema Actual
+
+El sistema utiliza contenedores Docker para aislar y desplegar de forma limpia cada servicio:
+
+```text
+                  ┌──────────────────────────────────────────┐
+                  │          ESP32-CAM (Video IP)            │
+                  │     • Transmisión de Stream MJPEG        │
+                  └────────────────────┬─────────────────────┘
+                                       │
+                                Stream de Video
+                                       │
+                                       ▼
+┌────────────────────────────────────────────────────────────────────────────────────────┐
+│                                 CONTENEDORES DOCKER                                    │
+│                                                                                        │
+│   ┌──────────────────────────────────┐        ┌────────────────────────────────────┐   │
+│   │    Dashboard Web (Nginx)         │        │     Backend Servidor (Java)        │   │
+│   │    • HTML5 / CSS3 / JavaScript   │ ─────> │     • Endpoints REST de Control    │   │
+│   │    • Interfaz estilo Gamepad     │  HTTP  │     • Conexión con Base de Datos   │   │
+│   └──────────────────────────────────┘        └─────────────────┬──────────────────┘   │
+└───────────────────────────────────────────────────────────────────┼────────────────────┘
+                                                                    │
+                                                                    ▼
+                                                    ┌────────────────────────────────────┐
+                                                    │     Base de Datos (PostgreSQL)     │
+                                                    │   • Almacenamiento y Persistencia  │
+                                                    └────────────────────────────────────┘
+
+```
+
+---
 
 ## 🎮 Panel de Control Web y Comandos
 
-La interfaz gráfica cuenta con un panel de control interactivo optimizado tanto para clics con el ratón como para control directo mediante el teclado de tu computadora.
+La interfaz gráfica del frontend está diseñada con un estilo retro-cyberpunk e incluye un mando de control interactivo con respuesta visual al hacer clic o usar el teclado.
 
-### Mapeo de Teclado y Controles:
-* **Movimiento (Orugas):** Teclas **`W`**, **`A`**, **`S`**, **`D`**. *(Nota: El robot se detiene automáticamente en cuanto dejas de presionar la tecla de dirección).*
+* **Movimiento (Orugas):** Teclas **`W`**, **`A`**, **`S`**, **`D`**. *(Nota: El robot se detiene automáticamente al soltar las teclas).*
 * **Cámara (Servos):** Teclas **`Q`** (Arriba) / **`E`** (Abajo).
 * **Brazos:** Teclas **`Z`** (Brazo Izquierdo) / **`X`** (Brazo Derecho).
-* **Dataset / Captura:** Tecla **`F`** para capturar fotogramas destinados al entrenamiento de la red neuronal.
+* **Dataset / Entrenamiento:** Tecla **`F`** o botón en pantalla para capturar fotos directamente hacia el dataset de entrenamiento.
 
 ---
 
@@ -29,3 +78,38 @@ La interfaz gráfica cuenta con un panel de control interactivo optimizado tanto
 * **Contenedores:** Docker & Docker Compose.
 * **Frontend:** HTML5, CSS3, JavaScript (Nginx).
 * **Hardware de Video:** ESP32-CAM.
+
+---
+
+## 🛠️ Guía Rápida de Despliegue
+
+### 1. Clonar el Repositorio
+
+```bash
+git clone https://github.com/Alfrezy/Mini.Wall-e.git
+cd Mini.Wall-eub.com/Alfrezy/Mini.Wall-e.git]
+
+```
+
+### 2. Levantar el Entorno con Docker Compose
+
+```bash
+docker compose up --build -d
+
+```
+
+---
+
+## 🧠 Entrenamiento de la Red Neuronal Desde Cero
+
+Para que la IA aprenda a reconocer los objetos del entorno de Wall-E:
+
+1. **Captura:** Usa el botón de captura de dataset desde la interfaz web mientras manejas el robot.
+2. **Etiquetado:** Usa herramientas como LabelImg o Roboflow para marcar las clases (basura, planta, persona).
+3. **Entrenamiento:** Entrena el modelo utilizando YOLOv8 en Python y exporta los pesos en formato `.onnx` para integrarlos con el backend de Java.
+
+---
+
+## 📄 Licencia
+
+Este proyecto está bajo la licencia MIT. Siéntete libre de usarlo, modificarlo y mejorarlo.
