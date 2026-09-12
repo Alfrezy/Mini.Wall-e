@@ -4,19 +4,23 @@ const URL_BACKEND = "http://localhost:8080/api/robot";
 document.addEventListener('keydown', (e) => {
     const tecla = e.key.toLowerCase();
     
-    // Movimiento (Orugas)
+    // Movimiento de Orugas (Motorreductores)
     if (tecla === 'w') enviarComando('/mover?direccion=ADELANTE');
     if (tecla === 's') enviarComando('/mover?direccion=ATRAS');
     if (tecla === 'a') enviarComando('/mover?direccion=IZQUIERDA');
     if (tecla === 'd') enviarComando('/mover?direccion=DERECHA');
     
-    // Cámara
-    if (tecla === 'q') enviarComando('/servo?parte=camara&angulo=120'); // Arriba
-    if (tecla === 'e') enviarComando('/servo?parte=camara&angulo=60');  // Abajo
+    // Cabeza (Arriba / Abajo - 0° a 180°)
+    if (tecla === 'q') enviarComando('/servo?parte=cabeza&angulo=180'); 
+    if (tecla === 'e') enviarComando('/servo?parte=cabeza&angulo=0');  
     
-    // Brazos
+    // Brazos Independientes
     if (tecla === 'z') enviarComando('/servo?parte=brazo_izq&angulo=180');
     if (tecla === 'x') enviarComando('/servo?parte=brazo_der&angulo=180');
+
+    // Compuerta Inferior de Almacenamiento
+    if (tecla === 'c') enviarComando('/servo?parte=compuerta&angulo=180'); // Abrir
+    if (tecla === 'v') enviarComando('/servo?parte=compuerta&angulo=0');   // Cerrar
 });
 
 // Función para enviar la orden al servidor Java
