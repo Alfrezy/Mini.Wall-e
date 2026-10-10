@@ -16,15 +16,14 @@ services:
       - db_data:/var/lib/postgresql/data
       - shared_backups:/var/backups/walle
 
-  # 2. Servidor Backend en Java (Spring Boot) - COMENTADO TEMPORALMENTE
-  # backend:
-  #   build:
-  #     context: ./backend_java
-  #     dockerfile: Dockerfile
-  #   container_name: walle_backend
-  #   restart: always
-  #   ports:
-  #     - "8080:8080"
+  # 2. Servidor Backend en Java (Spring Boot)
+  backend_java:
+    build: ./backend_java
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./dataset_fotos:/app/dataset_fotos
+    restart: always
   #   environment:
   #     SPRING_DATASOURCE_URL: jdbc:postgresql://database:5432/walle_db
   #     SPRING_DATASOURCE_USERNAME: Osiris
@@ -34,7 +33,7 @@ services:
   #   volumes:
   #     - shared_backups:/app/backups
 
-  # 3. Servicio de Visión y Red Neuronal (Python) - COMENTADO TEMPORALMENTE
+  # 3. Servicio de Visión y Red Neuronal (Python) - Descomentar cuando lo uses
   # ai-engine:
   #   build:
   #     context: ./vision
@@ -42,13 +41,11 @@ services:
   #   container_name: walle_ai
   #   restart: always
   #   ports:
-  #     - "5000:5000"
+  #     - "5000:5000" # Puerto para el servidor de Python / captura de dataset
   #   depends_on:
   #     - backend
 
-  # 4. Frontend Web (Servidor Nginx)
-
-# 2. Frontend Web 1 (En el puerto 80)
+  # 4. Frontend Web 1
   frontend:
     build:
       context: ./frontend_web1
@@ -58,15 +55,15 @@ services:
     ports:
       - "80:80"
 
-  # 3. Frontend Web 2 (En el puerto 8080)
-  frontend-web2:
-    build:
+  # 5. Frontend Web 2 / Panel Alternativo
+  frontend_web2:
+    build: 
       context: ./frontend_web2
       dockerfile: Dockerfile
-    container_name: walle_backend_web
-    restart: always
     ports:
-      - "8080:80"
+      - "8082:80"
+    depends_on:
+      - backend_java
 
 volumes:
   db_data:
