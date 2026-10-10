@@ -1,5 +1,4 @@
 body {
-    /* Fondo con la imagen de EVA y capa oscura translúcida para que resalten los paneles */
     background-image: linear-gradient(rgba(10, 10, 10, 0.85), rgba(10, 10, 10, 0.85)), url('../Imagenes/Eva.jpg');
     background-size: cover;
     background-position: center;
@@ -10,6 +9,7 @@ body {
     text-align: center;
     margin: 0;
     padding: 20px;
+    box-sizing: border-box;
 }
 
 h1 {
@@ -20,12 +20,14 @@ h1 {
     padding: 10px 20px;
     border-radius: 10px;
     border: 1px solid #ff0055;
+    font-size: 1.8rem;
+    max-width: 100%;
 }
 
 hr {
     border: 1px dashed #00ff66;
     width: 80%;
-    margin-bottom: 30px;
+    margin: 20px auto 30px auto;
 }
 
 .main-container {
@@ -34,6 +36,9 @@ hr {
     align-items: flex-start;
     gap: 40px;
     flex-wrap: wrap;
+    width: 100%;
+    max-width: 1100px;
+    margin: 0 auto;
 }
 
 /* Sección de Video */
@@ -49,6 +54,16 @@ hr {
     color: #ff0055;
     font-size: 20px;
     border-radius: 8px;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+.video-box img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border: none;
+    border-radius: 5px;
 }
 
 /* Panel del Control / Gamepad */
@@ -57,10 +72,12 @@ hr {
     box-shadow: 0 0 20px rgba(0, 255, 102, 0.3);
     padding: 20px;
     border-radius: 10px;
-    background: rgba(18, 18, 18, 0.85); /* Fondo semitransparente moderno */
-    backdrop-filter: blur(5px);         /* Efecto vidrio esmerilado */
+    background: rgba(18, 18, 18, 0.85); 
+    backdrop-filter: blur(5px);         
     width: 370px;
     text-align: left;
+    box-sizing: border-box;
+    flex-shrink: 0;
 }
 
 .controller-panel h3 {
@@ -70,49 +87,73 @@ hr {
     text-shadow: 0 0 5px #ff0055;
 }
 
-/* Estilo de la cruceta de movimiento (Sin botón STOP) */
+/* ================= CRUCETA UNIDA ESTILO GAME BOY ================= */
 .dpad {
-    display: grid;
-    grid-template-columns: repeat(3, 70px);
-    grid-template-rows: repeat(3, 70px);
-    gap: 5px;
-    justify-content: center;
-    margin: 15px 0;
+    position: relative;
+    width: 150px;
+    height: 150px;
+    margin: 15px auto;
+    background: #1a1a1a; /* El bloque central que une la cruceta */
+    border: 2px solid #00ff66;
+    border-radius: 12px;
+    box-shadow: 0 4px 0 #005522;
 }
 
 .btn-control {
+    position: absolute;
     background-color: #1a1a1a;
     color: #00ff66;
-    border: 2px solid #00ff66;
-    font-size: 18px;
+    border: 1px solid #00ff66;
+    font-size: 15px;
     font-weight: bold;
-    border-radius: 8px;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: all 0.1s ease;
-    box-shadow: 0 4px 0 #005522;
+    transition: all 0.08s ease;
+}
+
+/* Dimensiones y posiciones exactas para que formen una cruz sólida sin huecos separados */
+.btn-up { 
+    top: 2px; 
+    left: 47px; 
+    width: 52px; 
+    height: 48px; 
+    border-radius: 6px 6px 0 0; 
+}
+.btn-left { 
+    top: 47px; 
+    left: 2px; 
+    width: 48px; 
+    height: 52px; 
+    border-radius: 6px 0 0 6px; 
+}
+.btn-right { 
+    top: 47px; 
+    left: 96px; 
+    width: 48px; 
+    height: 52px; 
+    border-radius: 0 6px 6px 0; 
+}
+.btn-down { 
+    top: 96px; 
+    left: 47px; 
+    width: 52px; 
+    height: 48px; 
+    border-radius: 0 0 6px 6px; 
 }
 
 .btn-control:active, .btn-control.pressed {
     background-color: #00ff66;
     color: #0d0d0d;
-    transform: translateY(4px);
-    box-shadow: 0 0 0 #005522;
 }
-
-.btn-up { grid-column: 2; grid-row: 1; }
-.btn-left { grid-column: 1; grid-row: 2; }
-.btn-right { grid-column: 3; grid-row: 2; }
-.btn-down { grid-column: 2; grid-row: 3; }
 
 /* Controles Extras */
 .extra-controls {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 8px;
-    margin-top: 10px;
+    margin-top: 15px;
 }
 
 .btn-action {
@@ -143,6 +184,8 @@ hr {
     box-shadow: 0 0 4px 0 #550022;
     margin-top: 10px;
     font-size: 12px;
+    width: 100%;
+    padding: 12px;
 }
 
 .btn-dataset:active, .btn-dataset.pressed {
@@ -159,4 +202,33 @@ hr {
     background: rgba(0, 0, 0, 0.4);
     padding: 8px;
     border-radius: 5px;
+}
+
+/* ================= ADAPTACIÓN RESPONSIVA MÓVIL ================= */
+@media (max-width: 1050px) {
+    body {
+        padding: 10px;
+    }
+
+    h1 {
+        font-size: 1.1rem;
+        padding: 8px 12px;
+    }
+
+    .main-container {
+        gap: 20px;
+        align-items: center;
+    }
+
+    .video-box {
+        width: 100%;
+        max-width: 640px;
+        height: auto;
+        aspect-ratio: 4 / 3; 
+    }
+
+    .controller-panel {
+        width: 100%;
+        max-width: 100%;
+    }
 }
