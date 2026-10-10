@@ -16,11 +16,13 @@ body {
     justify-content: center;
     align-items: center;
     min-height: 100vh;
-    overflow: hidden;
+    overflow-x: hidden;
+    overflow-y: auto;
+    padding: 30px 15px;
 }
 
 .capa-opaca {
-    position: absolute; 
+    position: fixed; 
     top: 0; 
     left: 0; 
     width: 100%; 
@@ -29,34 +31,36 @@ body {
     z-index: 1;
 }
 
-/* ================= ENCABEZADO ================= */
+/* ================= ENCABEZADO CON LETRAS MUY GRANDES ================= */
 .dashboard-container {
     position: relative; 
     z-index: 2; 
     width: 100%; 
-    max-width: 1000px;
+    max-width: 1300px;
     display: flex; 
     flex-direction: column; 
-    gap: 50px; 
+    gap: 40px; 
     text-align: center;
+    padding: 15px;
 }
 
 .header h1 {
-    font-size: 2.8em; 
+    font-size: 3.5rem; /* Título principal gigante */
     letter-spacing: 3px; 
     font-weight: 900;
     color: #ffffff;
     text-transform: uppercase;
-    text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+    text-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
 }
 
 .header .subtitulo {
-    font-size: 1.1em; 
+    font-size: 1.6rem; /* Subtítulo mucho más grande */
     color: #00ff66;
-    letter-spacing: 5px; 
+    letter-spacing: 6px; 
     text-transform: uppercase;
-    margin-top: 5px;
+    margin-top: 10px;
     font-weight: 700;
+    text-shadow: 0 0 12px rgba(0, 255, 102, 0.5);
 }
 
 /* ================= DISEÑO DE TARJETAS ================= */
@@ -64,270 +68,57 @@ body {
     display: flex; 
     flex-wrap: wrap; 
     justify-content: center; 
-    gap: 20px; 
+    gap: 30px; 
+    width: 100%;
 }
 
 .card-btn {
-    background-color: rgba(20, 20, 20, 0.6);
-    padding: 30px 20px;
-    border-radius: 12px;
+    background-color: rgba(20, 20, 20, 0.75);
+    padding: 40px 20px; 
+    border-radius: 16px;
     text-align: center;
     color: white;
-    border: 2px solid rgba(0, 255, 102, 0.2);
+    border: 2px solid rgba(0, 255, 102, 0.25);
     display: flex; 
     flex-direction: column; 
     align-items: center; 
-    justify-content: flex-start; 
-    gap: 20px;
-    flex: 1 1 250px;
-    backdrop-filter: blur(5px);
+    justify-content: center; 
+    gap: 25px;
+    flex: 1 1 340px;
+    max-width: 400px; 
+    backdrop-filter: blur(8px);
     transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), 
                 box-shadow 0.4s ease, border-color 0.4s ease, opacity 0.4s ease;
 }
 
+/* ================= LETRAS DE LAS TARJETAS GRANDES ================= */
 .card-btn h3 {
-    font-size: 1.1em;
-    font-weight: 500;
-    letter-spacing: 1px;
-}
-
-/* TARJETA ACTIVA */
-.card-btn.activo {
-    transform: scale(1.15) translateY(-10px);
-    box-shadow: 0 0 25px rgba(0, 255, 102, 0.4);
-    border-color: #00ff66;
-    background-color: rgba(0, 255, 102, 0.12);
-    z-index: 2;
-    opacity: 1;
-}
-
-/* TARJETA INACTIVA */
-.card-btn:not(.activo) {
-    opacity: 0.35;
-    transform: scale(0.90);
-    border-color: rgba(255, 255, 255, 0.1);
-}
-
-/* ================= CONTENEDOR DE ANIMACIONES ================= */
-.animacion-contenedor { 
-    height: 80px; 
-    display: flex; 
-    align-items: center; 
-    justify-content: center; 
-    width: 100%;
-    position: relative;
-    color: #00ff66;
-}
-
-.oculto {
-    display: none !important;
-}
-
-/* ================= ANIMACIÓN DEL T-REX ================= */
-.dino-auto { 
-    position: relative; 
-    width: 90px; 
-    height: 60px; 
-    overflow: hidden; 
-}
-
-.robot-saltarin {
-    width: 32px; 
-    height: 32px;
-    position: absolute; 
-    bottom: 5px; 
-    left: 29px;
-    animation: saltarDino 0.45s infinite alternate ease-in-out;
-    filter: drop-shadow(0 0 6px #00ff66);
-}
-
-.dino-svg {
-    width: 100%;
-    height: 100%;
-}
-
-.suelo {
-    width: 200%; 
-    height: 2px;
-    background: linear-gradient(90deg, transparent, #00ff66, transparent);
-    position: absolute; 
-    bottom: 5px; 
-    left: 0;
-    animation: moverSuelo 1s linear infinite;
-}
-
-@keyframes saltarDino { 
-    0% { transform: translateY(0); } 
-    100% { transform: translateY(-28px); } 
-}
-
-@keyframes moverSuelo { 
-    0% { transform: translateX(0); } 
-    100% { transform: translateX(-50%); } 
-}
-
-/* ================= LOADER (Cargando para tarjetas inactivas) ================= */
-.lds-facebook,
-.lds-facebook div {
-    box-sizing: border-box;
-}
-
-.lds-facebook {
-    display: inline-block;
-    position: relative;
-    width: 80px;
-    height: 80px;
-}
-
-.lds-facebook div {
-    display: inline-block;
-    position: absolute;
-    left: 8px;
-    width: 16px;
-    background: currentColor;
-    animation: lds-facebook 1.2s cubic-bezier(0, 0.5, 0.5, 1) infinite;
-    box-shadow: 0 0 5px rgba(0, 255, 102, 0.5);
-}
-
-.lds-facebook div:nth-child(1) {
-    left: 8px;
-    animation-delay: -0.24s;
-}
-
-.lds-facebook div:nth-child(2) {
-    left: 32px;
-    animation-delay: -0.12s;
-}
-
-.lds-facebook div:nth-child(3) {
-    left: 56px;
-    animation-delay: 0s;
-}
-
-@keyframes lds-facebook {
-    0% {
-        top: 8px;
-        height: 64px;
-    }
-    50%, 100% {
-        top: 24px;
-        height: 32px;
-    }
-}
-
-/* ================= TIPOGRAFÍA Y ESTILOS GENERALES ================= */
-@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&display=swap');
-
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'Orbitron', 'Segoe UI', Tahoma, sans-serif;
-}
-
-body {
-    background: url('../Imagenes/wall-e_1.jpg') no-repeat center center fixed;
-    background-size: cover;
-    color: #fff;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    overflow: hidden;
-}
-
-.capa-opaca {
-    position: absolute; 
-    top: 0; 
-    left: 0; 
-    width: 100%; 
-    height: 100%;
-    background-color: rgba(13, 13, 13, 0.88);
-    z-index: 1;
-}
-
-/* ================= ENCABEZADO ================= */
-.dashboard-container {
-    position: relative; 
-    z-index: 2; 
-    width: 100%; 
-    max-width: 1000px;
-    display: flex; 
-    flex-direction: column; 
-    gap: 50px; 
-    text-align: center;
-}
-
-.header h1 {
-    font-size: 2.8em; 
-    letter-spacing: 3px; 
-    font-weight: 900;
-    color: #ffffff;
-    text-transform: uppercase;
-    text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
-}
-
-.header .subtitulo {
-    font-size: 1.1em; 
-    color: #00ff66;
-    letter-spacing: 5px; 
-    text-transform: uppercase;
-    margin-top: 5px;
+    font-size: 1.9rem; /* Letras de Patrullando, Basura y Plantas mucho más grandes */
     font-weight: 700;
-}
-
-/* ================= DISEÑO DE TARJETAS ================= */
-.flex-menu { 
-    display: flex; 
-    flex-wrap: wrap; 
-    justify-content: center; 
-    gap: 20px; 
-}
-
-.card-btn {
-    background-color: rgba(20, 20, 20, 0.6);
-    padding: 30px 20px;
-    border-radius: 12px;
-    text-align: center;
-    color: white;
-    border: 2px solid rgba(0, 255, 102, 0.2);
-    display: flex; 
-    flex-direction: column; 
-    align-items: center; 
-    justify-content: flex-start; 
-    gap: 20px;
-    flex: 1 1 250px;
-    backdrop-filter: blur(5px);
-    transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), 
-                box-shadow 0.4s ease, border-color 0.4s ease, opacity 0.4s ease;
-}
-
-.card-btn h3 {
-    font-size: 1.1em;
-    font-weight: 500;
-    letter-spacing: 1px;
+    letter-spacing: 1.5px;
+    text-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
 }
 
 /* TARJETA ACTIVA */
 .card-btn.activo {
-    transform: scale(1.15) translateY(-10px);
-    box-shadow: 0 0 25px rgba(0, 255, 102, 0.4);
+    transform: scale(1.08) translateY(-8px);
+    box-shadow: 0 0 35px rgba(0, 255, 102, 0.5);
     border-color: #00ff66;
-    background-color: rgba(0, 255, 102, 0.12);
+    background-color: rgba(0, 255, 102, 0.15);
     z-index: 2;
     opacity: 1;
 }
 
 /* TARJETA INACTIVA */
 .card-btn:not(.activo) {
-    opacity: 0.35;
-    transform: scale(0.90);
+    opacity: 0.5;
+    transform: scale(0.92);
     border-color: rgba(255, 255, 255, 0.1);
 }
 
 /* ================= CONTENEDOR DE ANIMACIONES ================= */
 .animacion-contenedor { 
-    height: 80px; 
+    height: 110px; 
     display: flex; 
     align-items: center; 
     justify-content: center; 
@@ -339,7 +130,7 @@ body {
     display: none !important;
 }
 
-/* ================= OJOS DE WALL-E (NUEVO DISEÑO) ================= */
+/* ================= OJOS DE WALL-E ================= */
 .outer-face {
     display: flex;
     justify-content: center;
@@ -352,12 +143,12 @@ body {
     padding: 0.8em 0.5em 0.5em;
     border-radius: 70% / 90% 90% 55% 55%;
     animation: float 2s infinite both;
-    transform: scale(0.65); /* Ajustado para encajar perfectamente en la tarjeta */
+    transform: scale(0.95);
 }
 
 @keyframes float {
     from, to { top: 0; }
-    50% { top: 1px; }
+    50% { top: 2px; }
 }
 
 .inner-face {
@@ -426,7 +217,7 @@ label:before {
     left: calc(2.5rem + 0.2em);
 }
 
-/* ================= LOADER (Cargando para tarjetas inactivas) ================= */
+/* ================= LOADER ================= */
 .lds-facebook,
 .lds-facebook div {
     box-sizing: border-box;
@@ -435,42 +226,73 @@ label:before {
 .lds-facebook {
     display: inline-block;
     position: relative;
-    width: 80px;
-    height: 80px;
+    width: 90px;
+    height: 90px;
 }
 
 .lds-facebook div {
     display: inline-block;
     position: absolute;
-    left: 8px;
-    width: 16px;
+    left: 10px;
+    width: 18px;
     background: currentColor;
     animation: lds-facebook 1.2s cubic-bezier(0, 0.5, 0.5, 1) infinite;
-    box-shadow: 0 0 5px rgba(0, 255, 102, 0.5);
+    box-shadow: 0 0 8px rgba(0, 255, 102, 0.7);
 }
 
 .lds-facebook div:nth-child(1) {
-    left: 8px;
+    left: 10px;
     animation-delay: -0.24s;
 }
 
 .lds-facebook div:nth-child(2) {
-    left: 32px;
+    left: 36px;
     animation-delay: -0.12s;
 }
 
 .lds-facebook div:nth-child(3) {
-    left: 56px;
+    left: 62px;
     animation-delay: 0s;
 }
 
 @keyframes lds-facebook {
     0% {
-        top: 8px;
-        height: 64px;
+        top: 10px;
+        height: 70px;
     }
     50%, 100% {
-        top: 24px;
-        height: 32px;
+        top: 25px;
+        height: 35px;
+    }
+}
+
+/* ================= MEDIA QUERIES PARA CELULARES ================= */
+@media (max-width: 768px) {
+    .header h1 {
+        font-size: 2.2rem;
+        letter-spacing: 1px;
+    }
+
+    .header .subtitulo {
+        font-size: 1.1rem;
+        letter-spacing: 3px;
+    }
+
+    .dashboard-container {
+        gap: 25px;
+    }
+
+    .card-btn {
+        flex: 1 1 100%;
+        max-width: 100%;
+        padding: 30px 15px;
+    }
+
+    .card-btn h3 {
+        font-size: 1.5rem;
+    }
+
+    .card-btn.activo {
+        transform: scale(1.03);
     }
 }
