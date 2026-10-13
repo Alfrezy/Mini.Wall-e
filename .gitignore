@@ -16,3 +16,6 @@ build/
 # Docker y SO
 postgres_data/
 .DS_Store
+
+#Entorno virtual de redes neuronales
+EntrenamientoNeuronal/venv
