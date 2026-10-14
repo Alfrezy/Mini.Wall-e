@@ -18,6 +18,7 @@ Para trabajar es neseario la versión de python 3.12
 ### Modulo CV2 <br>
 
 Para utilizar el modulo de CV2 es nesesario instalar libgl1 <br>
+
  ```sudo apt install -y libgl1```
 
 ---
