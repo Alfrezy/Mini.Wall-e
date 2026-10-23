@@ -1,0 +1,72 @@
+{
+    "experimento": "run_20261023_054652",
+    "clases": [
+        "Caja",
+        "bota",
+        "boteAluminio",
+        "papelHigienico"
+    ],
+    "imagen": {
+        "ancho": 96,
+        "alto": 96,
+        "canales": 1,
+        "formato": "grayscale"
+    },
+    "filtros_convolucionales": [
+        16,
+        32,
+        48,
+        64
+    ],
+    "batch_size": 8,
+    "epocas_maximas": 100,
+    "epocas_ejecutadas": 100,
+    "mejor_epoca_por_val_loss": 100,
+    "mejor_val_loss": 1.386391043663025,
+    "train_loss_sin_aumento": 1.3864506483078003,
+    "train_accuracy_sin_aumento": 0.25999999046325684,
+    "val_loss": 1.386391043663025,
+    "val_accuracy": 0.2666666805744171,
+    "parametros": 8500,
+    "conteos": {
+        "entrenamiento": {
+            "Caja": 13,
+            "bota": 14,
+            "boteAluminio": 13,
+            "papelHigienico": 10
+        },
+        "validacion": {
+            "Caja": 4,
+            "bota": 4,
+            "boteAluminio": 4,
+            "papelHigienico": 3
+        }
+    },
+    "matriz_confusion": [
+        [
+            4,
+            0,
+            0,
+            0
+        ],
+        [
+            4,
+            0,
+            0,
+            0
+        ],
+        [
+            4,
+            0,
+            0,
+            0
+        ],
+        [
+            3,
+            0,
+            0,
+            0
+        ]
+    ],
+    "log_dir": "/workspaces/Mini.Wall-e/EntrenamientoNeuronal/logs/entrenamiento/run_20261023_054652"
+}
