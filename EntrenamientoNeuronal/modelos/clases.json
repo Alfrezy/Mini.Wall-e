@@ -1,0 +1,14 @@
+{
+  "clases": [
+    "Caja",
+    "bota",
+    "boteAluminio",
+    "papelHigienico"
+  ],
+  "img_size": [
+    96,
+    96
+  ],
+  "canales": 1,
+  "preprocesado": "EXIF + gris + pad a 96x96 (relleno 128); el modelo incluye Rescaling(1/255)"
+}

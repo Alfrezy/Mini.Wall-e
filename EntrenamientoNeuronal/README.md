@@ -27,3 +27,9 @@ Para utilizar el modulo de CV2 es nesesario instalar libgl1. <br>
 ```sudo chmod +x tensorboard.sh && ./tensorboard.sh``` <br>
 
 Para abrir el entorno grafico de como se comportan las redes neuronales.
+
+### tf2onnx
+
+La compilación de modelos densos/convolucionales nesecitan ser transformados, para ello son convertidos a ONNX que son archivos generales como json de las redes neuronales.
+
+python -m tf2onnx.convert --saved-model <NombreModelo> --output <NombreModelo>.onnx --opset 15
