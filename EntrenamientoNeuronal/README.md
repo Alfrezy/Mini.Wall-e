@@ -33,3 +33,6 @@ Para abrir el entorno grafico de como se comportan las redes neuronales.
 La compilación de modelos densos/convolucionales nesecitan ser transformados, para ello son convertidos a ONNX que son archivos generales como json de las redes neuronales.
 
 python -m tf2onnx.convert --saved-model <NombreModelo> --output <NombreModelo>.onnx --opset 15
+
+
+python -m pip install -U ultralytics tensorboard

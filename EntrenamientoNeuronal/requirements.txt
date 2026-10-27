@@ -7,3 +7,7 @@ ultralytics
 tensorboard
 numpy
 tf2onnx
+yolo
+opencv-python-headless
+PyYAML
+Flask

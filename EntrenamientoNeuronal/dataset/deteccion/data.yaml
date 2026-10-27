@@ -1,0 +1,8 @@
+path: /workspaces/Mini.Wall-e/EntrenamientoNeuronal/dataset/deteccion
+train: images/train
+val: images/val
+names:
+  0: Caja
+  1: bota
+  2: boteAluminio
+  3: papelHigienico
