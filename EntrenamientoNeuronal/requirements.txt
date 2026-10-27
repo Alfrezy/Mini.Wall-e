@@ -5,3 +5,5 @@ pandas
 tensorflow
 ultralytics
 tensorboard
+numpy
+tf2onnx

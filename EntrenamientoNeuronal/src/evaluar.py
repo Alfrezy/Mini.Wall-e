@@ -1,167 +1,147 @@
+"""
+Mini.Wall-e - Evaluación de un modelo guardado.
 
+IMPORTANTE: la función preparar_imagen() debe ser IDÉNTICA a la de
+entrenar.py (EXIF + escala de grises + padding a 96x96 con relleno 128).
+Si el preprocesamiento difiere, las métricas no son comparables.
+
+Uso:
+  python3 src/evaluar.py --modelo modelos/aug0_bn0.9_ultima_epoca.keras
+  python3 src/evaluar.py --modelo modelos/X.keras --particion entrenamiento
+"""
+
+import argparse
+import json
 from pathlib import Path
 
 import numpy as np
-import tensorflow as tf
+from PIL import Image, ImageOps
+from sklearn.metrics import classification_report, confusion_matrix
 from tensorflow import keras
-
-
-# ============================================================
-# 1. CONFIGURACION
-# ============================================================
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-VAL_DIR = BASE_DIR / "dataset" / "validacion"
-MODELO_PATH = BASE_DIR / "modelos" / "mejor_modelo.keras"
+CLASES = ["Caja", "bota", "boteAluminio", "papelHigienico"]
+EXTENSIONES = {".jpg", ".jpeg", ".png", ".bmp", ".webp"}
+IMG_SIZE = (96, 96)  # (alto, ancho)
 
-CLASES = [
-    "Caja",
-    "bota",
-    "boteAluminio",
-    "papelHigienico",
-]
+PARTICIONES = {
+    "validacion": BASE_DIR / "dataset" / "validacion",
+    "entrenamiento": BASE_DIR / "dataset" / "entrenamiento",
+}
 
-IMG_SIZE = (96, 96)
+parser = argparse.ArgumentParser(description="Evalúa un modelo de Mini.Wall-e")
+parser.add_argument(
+    "--modelo",
+    default=str(BASE_DIR / "modelos" / "aug0_bn0.9_s2_mejor_val_loss.keras"),
+    help="Ruta del archivo .keras",
+)
+parser.add_argument("--particion", choices=list(PARTICIONES), default="validacion")
+args = parser.parse_args()
+
+MODELO_PATH = Path(args.modelo)
+if not MODELO_PATH.is_absolute():
+    MODELO_PATH = Path.cwd() / MODELO_PATH
+DATA_DIR = PARTICIONES[args.particion]
 
 if not MODELO_PATH.exists():
-    raise FileNotFoundError(
-        f"No se encontro el modelo: {MODELO_PATH}"
-    )
+    raise FileNotFoundError(f"No se encontró el modelo: {MODELO_PATH}")
+if not DATA_DIR.exists():
+    raise FileNotFoundError(f"No se encontró el dataset: {DATA_DIR}")
 
-if not VAL_DIR.exists():
-    raise FileNotFoundError(
-        f"No se encontro el dataset: {VAL_DIR}"
-    )
+ruta_clases = BASE_DIR / "modelos" / "clases.json"
+if ruta_clases.exists():
+    with open(ruta_clases, encoding="utf-8") as f:
+        clases_guardadas = json.load(f).get("clases")
+    if clases_guardadas != CLASES:
+        raise ValueError(
+            f"Las clases de clases.json {clases_guardadas} no coinciden "
+            f"con las de este script {CLASES}"
+        )
 
 
-# ============================================================
-# 2. CARGAR MODELO
-# ============================================================
+def preparar_imagen(ruta):
+    with Image.open(ruta) as img:
+        img = ImageOps.exif_transpose(img)
+        img = img.convert("L")
+        img = ImageOps.pad(
+            img, (IMG_SIZE[1], IMG_SIZE[0]),
+            method=Image.LANCZOS, color=128,
+        )
+        return np.asarray(img, dtype=np.float32)[..., None]
+
+
+def cargar_particion(carpeta):
+    X, y, rutas = [], [], []
+    for idx, clase in enumerate(CLASES):
+        dir_clase = carpeta / clase
+        if not dir_clase.is_dir():
+            raise FileNotFoundError(f"Falta la carpeta: {dir_clase}")
+        for ruta in sorted(dir_clase.iterdir()):
+            if ruta.suffix.lower() not in EXTENSIONES:
+                continue
+            X.append(preparar_imagen(ruta))
+            y.append(idx)
+            rutas.append(ruta)
+    if not X:
+        raise RuntimeError(f"No hay imágenes en {carpeta}")
+    return np.stack(X), np.array(y, dtype=np.int32), rutas
+
 
 modelo = keras.models.load_model(MODELO_PATH)
 
 print("=" * 60)
-print("EVALUACION DE MINI.WALL-E")
+print("EVALUACIÓN DE MINI.WALL-E")
 print("=" * 60)
-print("Modelo:", MODELO_PATH)
+print("Modelo   :", MODELO_PATH)
+print("Partición:", args.particion)
 print("Entrada esperada:", modelo.input_shape)
 
 if modelo.input_shape[-1] != 1:
-    raise ValueError(
-        "El modelo no espera una imagen de un canal. "
-        f"Entrada encontrada: {modelo.input_shape}"
-    )
+    raise ValueError(f"El modelo no espera un canal. Entrada: {modelo.input_shape}")
 
+X, y, rutas = cargar_particion(DATA_DIR)
+print(f"Imágenes cargadas: {len(y)}")
 
-# ============================================================
-# 3. CARGAR VALIDACION EN ESCALA DE GRISES
-# ============================================================
+probs = modelo.predict(X, batch_size=16, verbose=0)
+pred = np.argmax(probs, axis=1)
+conf = probs[np.arange(len(pred)), pred]
 
-val_ds = keras.utils.image_dataset_from_directory(
-    str(VAL_DIR),
-    labels="inferred",
-    label_mode="int",
-    class_names=CLASES,
-    color_mode="grayscale",
-    image_size=IMG_SIZE,
-    batch_size=1,
-    shuffle=False,
-)
-
-print("\nClases:", val_ds.class_names)
-
-
-# ============================================================
-# 4. EVALUAR Y MOSTRAR PREDICCIONES
-# ============================================================
-
-etiquetas_reales = []
-etiquetas_predichas = []
-confianzas = []
-
-print("\n--- PREDICCIONES DE VALIDACION ---\n")
-
-for imagenes, etiquetas in val_ds:
-    probabilidades = modelo.predict(imagenes, verbose=0)[0]
-
-    indice_real = int(etiquetas.numpy()[0])
-    indice_predicho = int(np.argmax(probabilidades))
-    confianza = float(probabilidades[indice_predicho])
-
-    clase_real = CLASES[indice_real]
-    clase_predicha = CLASES[indice_predicho]
-
-    resultado = (
-        "CORRECTO"
-        if indice_real == indice_predicho
-        else "INCORRECTO"
-    )
-
+print("\n--- PREDICCIONES ---\n")
+for r, real, p, c in zip(rutas, y, pred, conf):
+    estado = "CORRECTO" if real == p else "INCORRECTO"
     print(
-        f"Real: {clase_real:18} | "
-        f"Prediccion: {clase_predicha:18} | "
-        f"Confianza: {confianza:.3f} | "
-        f"{resultado}"
+        f"Real: {CLASES[real]:15s} | Pred: {CLASES[p]:15s} | "
+        f"Conf: {c:.3f} | {estado:10s} | {r.name}"
     )
 
-    etiquetas_reales.append(indice_real)
-    etiquetas_predichas.append(indice_predicho)
-    confianzas.append(confianza)
+matriz = confusion_matrix(y, pred, labels=np.arange(len(CLASES)))
+aciertos = int(np.trace(matriz))
 
-
-# ============================================================
-# 5. MATRIZ DE CONFUSION
-# ============================================================
-
-matriz = np.zeros(
-    (len(CLASES), len(CLASES)),
-    dtype=int,
-)
-
-for real, predicha in zip(
-    etiquetas_reales,
-    etiquetas_predichas,
-):
-    matriz[real, predicha] += 1
-
-print("\n--- MATRIZ DE CONFUSION ---")
-print("Filas = clase real; columnas = prediccion")
+print("\n--- MATRIZ DE CONFUSIÓN (filas = real, columnas = predicho) ---")
 print("Orden:", CLASES)
 print(matriz)
 
-
-# ============================================================
-# 6. METRICAS
-# ============================================================
-
-total = len(etiquetas_reales)
-aciertos = int(np.trace(matriz))
-
-accuracy = aciertos / total if total else 0.0
-
 print("\n--- RESULTADOS ---")
-print(f"Aciertos: {aciertos}/{total}")
-print(f"Accuracy: {accuracy * 100:.2f}%")
+print(f"Aciertos: {aciertos}/{len(y)}")
+print(f"Accuracy: {aciertos / len(y) * 100:.2f}%")
+print("Predicciones por clase:",
+      {c: int(np.sum(pred == i)) for i, c in enumerate(CLASES)})
 
 print("\nAccuracy por clase:")
+for i, clase in enumerate(CLASES):
+    n = int(matriz[i].sum())
+    ok = int(matriz[i, i])
+    print(f"  {clase:15s}: {ok}/{n} ({ok / n * 100 if n else 0:.1f}%)")
 
-for indice, clase in enumerate(CLASES):
-    cantidad = int(matriz[indice].sum())
-    correctos = int(matriz[indice, indice])
+ok_mask = pred == y
+print(f"\nConfianza media (aciertos) : "
+      f"{conf[ok_mask].mean() if ok_mask.any() else float('nan'):.3f}")
+print(f"Confianza media (errores)  : "
+      f"{conf[~ok_mask].mean() if (~ok_mask).any() else float('nan'):.3f}")
 
-    porcentaje = (
-        correctos / cantidad * 100
-        if cantidad
-        else 0.0
-    )
-
-    print(
-        f"{clase:18}: "
-        f"{correctos}/{cantidad} ({porcentaje:.2f}%)"
-    )
-
-print(
-    "\nConfianza media de las predicciones: "
-    f"{np.mean(confianzas):.3f}"
-)
+print()
+print(classification_report(
+    y, pred, labels=np.arange(len(CLASES)),
+    target_names=CLASES, zero_division=0,
+))
