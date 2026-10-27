@@ -1,0 +1,4 @@
+flask
+opencv-contrib-python-headless
+requests
+numpy
