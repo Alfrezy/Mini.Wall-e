@@ -6,3 +6,5 @@ COPY . /usr/share/nginx/html
 
 # Exponer el puerto 80 para el navegador
 EXPOSE 80
+
+CMD ["nginx", "-g", "daemon off;"]

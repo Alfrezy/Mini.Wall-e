@@ -7,9 +7,9 @@ services:
     container_name: walle_db
     restart: always
     environment:
-      POSTGRES_DB: Wall_e
-      POSTGRES_USER: Osiris
-      POSTGRES_PASSWORD: Alfrezzy
+      POSTGRES_DB: walle_db
+      POSTGRES_USER: walle_user
+      POSTGRES_PASSWORD: walle_password
     ports:
       - "5432:5432"
     volumes:
@@ -17,35 +17,40 @@ services:
       - shared_backups:/var/backups/walle
 
   # 2. Servidor Backend en Java (Spring Boot)
-  backend_java:
-    build: ./backend_java
+  backend:
+    build:
+      context: ./backend_java
+      dockerfile: Dockerfile
+    container_name: walle_backend
+    restart: always
     ports:
       - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://database:5432/walle_db
+      SPRING_DATASOURCE_USERNAME: walle_user
+      SPRING_DATASOURCE_PASSWORD: walle_password
+    depends_on:
+      - database
     volumes:
+      - shared_backups:/app/backups
       - ./dataset_fotos:/app/dataset_fotos
+
+  # 3. Servicio de Visión y Red Neuronal (Python + OpenCV + ArUco)
+  ai-engine:
+    build:
+      context: ./vision
+      dockerfile: Dockerfile
+    container_name: walle_ai
     restart: always
-  #   environment:
-  #     SPRING_DATASOURCE_URL: jdbc:postgresql://database:5432/walle_db
-  #     SPRING_DATASOURCE_USERNAME: Osiris
-  #     SPRING_DATASOURCE_PASSWORD: Alfrezzy
-  #   depends_on:
-  #     - database
-  #   volumes:
-  #     - shared_backups:/app/backups
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./EntrenamientoNeuronal:/app/EntrenamientoNeuronal  # <-- Añadido para que la IA acceda al dataset local
+      - ./dataset_fotos:/app/dataset_fotos                  # Fotos que manda el robot en tiempo real
+    depends_on:
+      - backend
 
-  # 3. Servicio de Visión y Red Neuronal (Python) - Descomentar cuando lo uses
-  # ai-engine:
-  #   build:
-  #     context: ./vision
-  #     dockerfile: Dockerfile
-  #   container_name: walle_ai
-  #   restart: always
-  #   ports:
-  #     - "5000:5000" # Puerto para el servidor de Python / captura de dataset
-  #   depends_on:
-  #     - backend
-
-  # 4. Frontend Web 1
+  # 4. Frontend Web Principal
   frontend:
     build:
       context: ./frontend_web1
@@ -54,16 +59,8 @@ services:
     restart: always
     ports:
       - "80:80"
-
-  # 5. Frontend Web 2 / Panel Alternativo
-  frontend_web2:
-    build: 
-      context: ./frontend_web2
-      dockerfile: Dockerfile
-    ports:
-      - "8082:80"
     depends_on:
-      - backend_java
+      - backend
 
 volumes:
   db_data:
