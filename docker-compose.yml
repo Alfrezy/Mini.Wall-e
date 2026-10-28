@@ -38,7 +38,7 @@ services:
   # 3. Servicio de Visión y Red Neuronal (Python + OpenCV + ArUco)
   ai-engine:
     build:
-      context: ./vision
+      context: ./Vision
       dockerfile: Dockerfile
     container_name: walle_ai
     restart: always
