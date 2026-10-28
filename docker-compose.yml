@@ -8,8 +8,8 @@ services:
     restart: always
     environment:
       POSTGRES_DB: walle_db
-      POSTGRES_USER: walle_user
-      POSTGRES_PASSWORD: walle_password
+      POSTGRES_USER: walle
+      POSTGRES_PASSWORD: JKM
     ports:
       - "5432:5432"
     volumes:
@@ -27,8 +27,8 @@ services:
       - "8080:8080"
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://database:5432/walle_db
-      SPRING_DATASOURCE_USERNAME: walle_user
-      SPRING_DATASOURCE_PASSWORD: walle_password
+      SPRING_DATASOURCE_USERNAME: walle
+      SPRING_DATASOURCE_PASSWORD: JKM
     depends_on:
       - database
     volumes:
