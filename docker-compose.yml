@@ -24,7 +24,7 @@ services:
     container_name: walle_backend
     restart: always
     ports:
-      - "8080:8080"
+      - "9090:8080"  # <- Cambiado a 9090 para liberar el 8080 para tu panel manual
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://database:5432/walle_db
       SPRING_DATASOURCE_USERNAME: walle
@@ -45,12 +45,12 @@ services:
     ports:
       - "5000:5000"
     volumes:
-      - ./EntrenamientoNeuronal:/app/EntrenamientoNeuronal  # <-- Añadido para que la IA acceda al dataset local
-      - ./dataset_fotos:/app/dataset_fotos                  # Fotos que manda el robot en tiempo real
+      - ./EntrenamientoNeuronal:/app/EntrenamientoNeuronal
+      - ./dataset_fotos:/app/dataset_fotos
     depends_on:
       - backend
 
-  # 4. Frontend Web Principal
+  # 4. Frontend Principal (Dashboard de Estados en el puerto 80)
   frontend:
     build:
       context: ./frontend_web1
@@ -59,6 +59,18 @@ services:
     restart: always
     ports:
       - "80:80"
+    depends_on:
+      - backend
+
+  # 5. Frontend 2 (Panel de Control Manual en el puerto 8080)
+  frontend_manual:
+    build:
+      context: ./frontend_web2  # Asegúrate de que esta sea la carpeta donde tienes tu index_3.html y teclado_3.js
+      dockerfile: Dockerfile
+    container_name: walle_web_manual
+    restart: always
+    ports:
+      - "8080:80"
     depends_on:
       - backend
 
