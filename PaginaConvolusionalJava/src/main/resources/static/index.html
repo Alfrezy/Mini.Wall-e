@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mini Wall-E</title>
+<style>
+:root{
+  --ink:#12302b; --paper:#eaf0e6; --panel:#f7faf4; --yellow:#f4c430; --steel:#b7c3c0; --rust:#c2512b; --line:#c9d6cf;
+  --font:"Avenir Next","Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+}
+*{box-sizing:border-box;margin:0}
+body{font-family:var(--font);background:var(--paper);color:var(--ink);min-height:100vh;padding:clamp(16px,4vw,48px)}
+main{max-width:1040px;margin:0 auto;display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);gap:clamp(20px,3vw,40px);align-items:start}
+h1{grid-column:1/-1;font-size:clamp(28px,4.5vw,44px);font-weight:800;letter-spacing:-.02em}
+h1 small{display:block;font-size:16px;font-weight:500;opacity:.7;margin-top:6px;letter-spacing:0}
+.viewer{background:var(--ink);border-radius:28px;padding:14px;position:relative}
+.screen{position:relative;aspect-ratio:1;border-radius:18px;overflow:hidden;background:#0c211d;display:grid;place-items:center;cursor:pointer;border:3px dashed transparent;transition:border-color .2s}
+.screen.drag{border-color:var(--yellow)}
+canvas{width:100%;height:100%;object-fit:contain;display:none}
+.empty{color:#b9cbc5;text-align:center;padding:24px;line-height:1.5}
+.empty b{display:block;color:#fff;font-size:20px;margin-bottom:6px}
+.dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:8px}
+.eyes{position:absolute;top:12px;left:12px;display:flex;gap:6px}
+.eyes i{width:12px;height:12px;border-radius:50%;background:var(--yellow);box-shadow:0 0 0 3px #0c211d}
+.busy .eyes i{animation:blink .8s infinite alternate}
+@keyframes blink{to{opacity:.25}}
+.buttons{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap}
+button{font:inherit;font-weight:700;border:0;border-radius:999px;padding:12px 20px;cursor:pointer;background:var(--yellow);color:var(--ink)}
+button.alt{background:transparent;color:#fff;box-shadow:inset 0 0 0 2px #4b6a63}
+button.on{background:var(--rust);color:#fff;box-shadow:none}
+button:focus-visible,.screen:focus-visible{outline:3px solid #fff;outline-offset:3px}
+.answer{background:var(--panel);border-radius:28px;padding:clamp(20px,3vw,32px);border:1px solid var(--line)}
+#msg{font-size:clamp(26px,3.6vw,38px);font-weight:800;line-height:1.15;letter-spacing:-.02em;min-height:2.4em}
+#msg.dudo{color:var(--rust)}
+#sub{margin-top:8px;opacity:.7;min-height:1.4em}
+.bars{margin-top:24px;display:grid;gap:12px}
+.row{display:grid;grid-template-columns:130px 1fr 52px;gap:10px;align-items:center;font-size:15px}
+.track{height:12px;border-radius:99px;background:#dde7e0;overflow:hidden}
+.fill{height:100%;width:0;border-radius:99px;background:var(--steel);transition:width .35s}
+.row.top .fill{background:var(--ink)}
+.row.top{font-weight:800}
+.num{text-align:right;font-variant-numeric:tabular-nums}
+@media(max-width:760px){main{grid-template-columns:1fr}.row{grid-template-columns:110px 1fr 46px}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<main>
+  <h1>Mini Wall-E<small>Muéstrame un residuo y te digo qué es.</small></h1>
+
+  <section class="viewer" id="viewer">
+    <div class="screen" id="screen" tabindex="0" role="button" aria-label="Elegir o soltar una imagen">
+      <canvas id="view"></canvas>
+      <div class="empty" id="empty"><b>Suelta una foto aquí</b>o toca para elegir una imagen</div>
+      <div class="eyes" aria-hidden="true"><i></i><i></i></div>
+    </div>
+    <div class="buttons">
+      <button id="pick">Elegir imagen</button>
+      <button id="cam" class="alt">Usar cámara</button>
+    </div>
+    <input type="file" id="file" accept="image/*" hidden>
+  </section>
+
+  <section class="answer" aria-live="polite">
+    <p id="msg">Estoy esperando algo para mirar.</p>
+    <p id="sub"></p>
+    <div class="bars" id="bars"></div>
+  </section>
+</main>
+
+<script>
+const $ = s => document.querySelector(s);
+const view = $('#view'), ctx = view.getContext('2d');
+let stream = null, live = false, busy = false;
+
+function draw(src, w, h){
+  const k = Math.min(1, 640 / Math.max(w, h));
+  view.width = Math.round(w * k); view.height = Math.round(h * k);
+  ctx.drawImage(src, 0, 0, view.width, view.height);
+  view.style.display = 'block'; $('#empty').style.display = 'none';
+}
+
+const COLORS = { Caja:'#f4c430', bota:'#ff8a5b', boteAluminio:'#7fd1c7', papelHigienico:'#c7a6ff' };
+
+function drawBoxes(list){
+  const lw = Math.max(2, view.width / 180), fs = Math.max(12, view.width / 32);
+  ctx.lineWidth = lw; ctx.font = `700 ${fs}px sans-serif`; ctx.textBaseline = 'top';
+  for (const b of list){
+    const c = COLORS[b.clase] || '#fff';
+    const x = b.x * view.width, y = b.y * view.height, w = b.w * view.width, h = b.h * view.height;
+    ctx.strokeStyle = c; ctx.strokeRect(x, y, w, h);
+    const t = `${b.clase} ${Math.round(b.confianza * 100)}%`, tw = ctx.measureText(t).width + 10;
+    const ty = y - fs - 6 < 0 ? y : y - fs - 6;
+    ctx.fillStyle = c; ctx.fillRect(x, ty, tw, fs + 6);
+    ctx.fillStyle = '#12302b'; ctx.fillText(t, x + 5, ty + 3);
+  }
+}
+
+async function analyze(){
+  if (busy) return; busy = true; $('#viewer').classList.add('busy');
+  try {
+    const blob = await new Promise(r => view.toBlob(r, 'image/jpeg', .9));
+    const fd = new FormData(); fd.append('file', blob, 'img.jpg');
+    const res = await fetch('/api/predict', { method:'POST', body: fd });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Error ' + res.status);
+    show(data);
+  } catch(e){
+    $('#msg').textContent = 'No pude mirar bien.'; $('#msg').className = 'dudo';
+    $('#sub').textContent = e.message;
+  } finally { busy = false; $('#viewer').classList.remove('busy'); }
+}
+
+function show(d){
+  drawBoxes(d.detecciones);
+  $('#msg').textContent = d.mensaje + '.';
+  $('#msg').className = d.total ? '' : 'dudo';
+  $('#sub').textContent = d.total ? (d.total === 1 ? '1 objeto detectado' : d.total + ' objetos detectados') : 'Prueba con más luz o acércalo a la cámara.';
+  $('#bars').innerHTML = d.detecciones.map(p =>
+    `<div class="row top"><span><i class="dot" style="background:${COLORS[p.clase] || '#999'}"></i>${p.clase}</span>
+     <div class="track"><div class="fill" style="width:${(p.confianza*100).toFixed(1)}%"></div></div>
+     <span class="num">${(p.confianza*100).toFixed(0)}%</span></div>`).join('');
+}
+
+async function loadFile(f){
+  if (!f) return; stopCam();
+  // 'from-image' aplica la orientación EXIF del archivo
+  const bmp = await createImageBitmap(f, { imageOrientation: 'from-image' });
+  draw(bmp, bmp.width, bmp.height); analyze();
+}
+
+async function startCam(){
+  try {
+    stream = await navigator.mediaDevices.getUserMedia({ video:{ facingMode:'environment' } });
+  } catch { $('#msg').textContent = 'No pude abrir la cámara.'; $('#sub').textContent = 'Revisa el permiso del navegador (necesita localhost o HTTPS).'; return; }
+  const v = document.createElement('video'); v.srcObject = stream; v.muted = true; v.playsInline = true; await v.play();
+  live = true; $('#cam').textContent = 'Detener cámara'; $('#cam').classList.add('on');
+  (async function loop(){
+    while (live){ draw(v, v.videoWidth, v.videoHeight); await analyze(); await new Promise(r => setTimeout(r, 400)); }
+  })();
+}
+function stopCam(){
+  live = false; if (stream) stream.getTracks().forEach(t => t.stop()); stream = null;
+  $('#cam').textContent = 'Usar cámara'; $('#cam').classList.remove('on');
+}
+
+$('#pick').onclick = $('#screen').onclick = () => $('#file').click();
+$('#screen').onkeydown = e => { if (e.key === 'Enter' || e.key === ' ') $('#file').click(); };
+$('#file').onchange = e => { loadFile(e.target.files[0]); e.target.value = ''; };
+$('#cam').onclick = () => live ? stopCam() : startCam();
+['dragover','dragenter'].forEach(n => $('#screen').addEventListener(n, e => { e.preventDefault(); $('#screen').classList.add('drag'); }));
+['dragleave','drop'].forEach(n => $('#screen').addEventListener(n, e => { e.preventDefault(); $('#screen').classList.remove('drag'); }));
+$('#screen').addEventListener('drop', e => loadFile(e.dataTransfer.files[0]));
+</script>
+</body>
+</html>

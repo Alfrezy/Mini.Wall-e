@@ -1,0 +1,12 @@
+services:
+  mini-walle:
+    build: .
+    ports: ["8080:8080"]
+    volumes:
+      - ./model:/app/model:ro
+    environment:
+      - MODEL_PATH=/app/model/CNN_Basura.onnx
+      - CLASSES=Caja,bota,boteAluminio,papelHigienico
+      - IMG_SIZE=640
+      - CONF=0.25
+      - IOU=0.45
