@@ -45,7 +45,7 @@ body {
 }
 
 .header h1 {
-    font-size: 3.5rem; /* Título principal gigante */
+    font-size: 3.5rem;
     letter-spacing: 3px; 
     font-weight: 900;
     color: #ffffff;
@@ -54,7 +54,7 @@ body {
 }
 
 .header .subtitulo {
-    font-size: 1.6rem; /* Subtítulo mucho más grande */
+    font-size: 1.6rem;
     color: #00ff66;
     letter-spacing: 6px; 
     text-transform: uppercase;
@@ -91,9 +91,8 @@ body {
                 box-shadow 0.4s ease, border-color 0.4s ease, opacity 0.4s ease;
 }
 
-/* ================= LETRAS DE LAS TARJETAS GRANDES ================= */
 .card-btn h3 {
-    font-size: 1.9rem; /* Letras de Patrullando, Basura y Plantas mucho más grandes */
+    font-size: 1.9rem;
     font-weight: 700;
     letter-spacing: 1.5px;
     text-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
@@ -217,53 +216,84 @@ label:before {
     left: calc(2.5rem + 0.2em);
 }
 
-/* ================= LOADER ================= */
-.lds-facebook,
-.lds-facebook div {
-    box-sizing: border-box;
+/* ================= PAC-MAN ANIMATION (ALINEADO Y FLUIDO) ================= */
+.pac-man {
+  --primaryClr: #fed75a;
+  --pacman-size: 60px;
+  position: relative;
+  margin: 0 auto;
+  width: var(--pacman-size);
+  height: calc(var(--pacman-size) / 2);
+  border-radius: 100em 100em 0 0;
+  background: var(--primaryClr);
+  transform-origin: bottom;
+  animation: eating-top .5s infinite;
 }
 
-.lds-facebook {
-    display: inline-block;
-    position: relative;
-    width: 90px;
-    height: 90px;
+.pac-man::before {
+  content: '';
+  display: block;
+  width: var(--pacman-size);
+  height: calc(var(--pacman-size) / 2);
+  background: var(--primaryClr);
+  margin-top: calc(var(--pacman-size) / 2);
+  position: absolute;
+  transform-origin: top;
+  border-radius: 0 0 100em 100em;
+  transform: rotate(80deg);
+  animation: eating-bottom .5s infinite;
 }
 
-.lds-facebook div {
-    display: inline-block;
-    position: absolute;
-    left: 10px;
-    width: 18px;
-    background: currentColor;
-    animation: lds-facebook 1.2s cubic-bezier(0, 0.5, 0.5, 1) infinite;
-    box-shadow: 0 0 8px rgba(0, 255, 102, 0.7);
+.pac-man::after {
+  position: absolute;
+  border-radius: 100em;
+  content: '';
+  display: block;
+  height: 12px;
+  width: 12px;
+  /* Centrado exacto a la altura de la boca */
+  top: calc((var(--pacman-size) / 4) - 6px);
+  left: 0;
+  transform-origin: center;
+  animation: 
+    center .5s infinite,
+    ball .5s -.33s infinite linear;
 }
 
-.lds-facebook div:nth-child(1) {
-    left: 10px;
-    animation-delay: -0.24s;
+@keyframes eating-top {
+  0% { transform: rotate(-40deg); }
+  50% { transform: rotate(0deg); }
+  100% { transform: rotate(-40deg); }
 }
 
-.lds-facebook div:nth-child(2) {
-    left: 36px;
-    animation-delay: -0.12s;
+@keyframes eating-bottom {
+  0% { transform: rotate(80deg); }
+  50% { transform: rotate(0deg); }
+  100% { transform: rotate(80deg); }
 }
 
-.lds-facebook div:nth-child(3) {
-    left: 62px;
-    animation-delay: 0s;
+@keyframes center {
+  0% { transform: rotate(40deg); }
+  50% { transform: rotate(0deg); }
+  100% { transform: rotate(40deg); }
 }
 
-@keyframes lds-facebook {
-    0% {
-        top: 10px;
-        height: 70px;
-    }
-    50%, 100% {
-        top: 25px;
-        height: 35px;
-    }
+@keyframes ball {
+  0% { 
+    opacity: .8;
+    /* Movimiento en línea recta horizontal saliendo directo de la boca */
+    box-shadow: 
+      45px 0 0 0 var(--primaryClr),
+      80px 0 0 0 var(--primaryClr),
+      115px 0 0 0 var(--primaryClr);
+  }
+  100% { 
+    box-shadow: 
+      15px 0 0 0 var(--primaryClr),
+      45px 0 0 0 var(--primaryClr),
+      80px 0 0 0 var(--primaryClr),
+      115px 0 0 0 var(--primaryClr);
+  }
 }
 
 /* ================= MEDIA QUERIES PARA CELULARES ================= */
