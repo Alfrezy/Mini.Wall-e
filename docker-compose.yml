@@ -24,16 +24,23 @@ services:
     container_name: walle_backend
     restart: always
     ports:
-      - "9090:8080"  # <- Cambiado a 9090 para liberar el 8080 para tu panel manual
+      - "9090:8080"  # <- 9090 para liberar el 8080 para tu panel manual
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://database:5432/walle_db
       SPRING_DATASOURCE_USERNAME: walle
       SPRING_DATASOURCE_PASSWORD: JKM
+      # --- Modelo YOLO (se monta como volumen, no va dentro de la imagen) ---
+      MODEL_PATH: /app/modelos/CNN_Basura.onnx
+      # --- ESP32 principal (motores y servos) ---
+      ESP32_WS_URL: ws://192.168.137.200/ws
+      # --- Cómo arranca el robot: MANUAL (solo detecta) o AUTONOMO (detecta y actúa) ---
+      WALLE_MODO_INICIAL: MANUAL
     depends_on:
       - database
     volumes:
       - shared_backups:/app/backups
       - ./dataset_fotos:/app/dataset_fotos
+      - ./EntrenamientoNeuronal/modelos:/app/modelos:ro
 
   # 3. Servicio de Visión y Red Neuronal (Python + OpenCV + ArUco)
   ai-engine:
@@ -65,7 +72,7 @@ services:
   # 5. Frontend 2 (Panel de Control Manual en el puerto 8080)
   frontend_manual:
     build:
-      context: ./frontend_web2  # Asegúrate de que esta sea la carpeta donde tienes tu index_3.html y teclado_3.js
+      context: ./frontend_web2
       dockerfile: Dockerfile
     container_name: walle_web_manual
     restart: always
