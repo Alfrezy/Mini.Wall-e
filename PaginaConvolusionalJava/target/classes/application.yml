@@ -1,0 +1,9 @@
+server.port: 8080
+spring.servlet.multipart.max-file-size: 15MB
+spring.servlet.multipart.max-request-size: 15MB
+app:
+  model-path: ${MODEL_PATH:model/model.onnx}
+  img-size: ${IMG_SIZE:640}
+  classes: ${CLASSES:Caja,bota,boteAluminio,papelHigienico}
+  conf: ${CONF:0.25}
+  iou: ${IOU:0.45}
