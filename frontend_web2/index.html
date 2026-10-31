@@ -18,6 +18,19 @@
 
         <!-- Panel de control interactivo -->
         <div class="controller-panel">
+
+            <!-- MODO MANUAL / AUTÓNOMO -->
+            <div id="panel-autonomo" style="border: 1px solid #555; border-radius: 8px; padding: 10px; margin-bottom: 12px;">
+                <h3 style="margin: 0 0 6px 0;">MODO DEL ROBOT</h3>
+                <div id="modo-actual" style="font-size: 20px; font-weight: bold;">...</div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-top: 8px;">
+                    <button id="btn-modo" class="btn-action" onclick="cambiarModo()">Activar AUTÓNOMO</button>
+                    <button id="btn-detener" class="btn-action" style="background: #b91c1c; color: white;" onclick="detenerRobot()">🛑 DETENER</button>
+                </div>
+                <button id="btn-soltar" class="btn-action" style="width: 100%; margin-top: 6px;" onclick="soltarBasura()">🗑️ Soltar basura</button>
+                <div id="estado-robot" style="font-size: 11px; margin-top: 8px; line-height: 1.5;">Conectando con el backend...</div>
+            </div>
+
             <h3>MANDO DE CONTROL</h3>
             
             <!-- Control de Orugas (Mapeo estándar: W=Adelante, A=Izq, D=Der, S=Atrás) -->
@@ -48,7 +61,7 @@
             <button id="btn-foto" class="btn-action btn-dataset" onclick="capturarFotoDataset('basura')">📷 CAPTURAR FOTO (DATASET)</button>
 
             <div class="info-text">
-                <b>Teclado activo:</b><br>
+                <b>Teclado activo (solo en modo MANUAL):</b><br>
                 • Orugas: <b>W, A, S, D</b> (Se detienen al soltar)<br>
                 • Brazos: <b>Z</b> (izq) / <b>X</b> (der) bajan un poco y al soltar vuelven a la posición inicial<br>
                 • Compuertas: <b>C</b> abrir / <b>V</b> cerrar<br>
@@ -58,5 +71,6 @@
     </div>
 
     <script src="js/teclado.js"></script>
+    <script src="js/autonomo.js"></script>
 </body>
 </html>

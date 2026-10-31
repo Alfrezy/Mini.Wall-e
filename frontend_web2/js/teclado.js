@@ -1,5 +1,5 @@
 // --- URLS DE LOS SERVICIOS ---
-const URL_BACKEND = "http://localhost:8080/api/robot";      // Para Java (Fotos y Métricas)
+const URL_BACKEND = "http://localhost:9090/api/robot";      // Para Java (Fotos y Métricas)
 const ESP32_IP = "192.168.137.200";                         // ESP32 Principal (Motores y Servos) - IP FIJA
  
 // --- CÁMARA ESP32-CAM (IP Fija) ---
