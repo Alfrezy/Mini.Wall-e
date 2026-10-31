@@ -40,11 +40,12 @@
             <scope>runtime</scope>
         </dependency>
 
-        <!-- ONNX Runtime para Java (Ejecuta MiniWallE.onnx) -->
+        <!-- ONNX Runtime para Java (ejecuta CNN_Basura.onnx, el modelo YOLO).
+             1.19.2 es la misma versión que ya te funcionó en PaginaConvolusionalJava. -->
         <dependency>
             <groupId>com.microsoft.onnxruntime</groupId>
             <artifactId>onnxruntime</artifactId>
-            <version>1.16.3</version>
+            <version>1.19.2</version>
         </dependency>
     </dependencies>
 
