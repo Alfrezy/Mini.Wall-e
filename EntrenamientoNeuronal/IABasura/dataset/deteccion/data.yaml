@@ -1,4 +1,4 @@
-path: /workspaces/Mini.Wall-e/EntrenamientoNeuronal/dataset/deteccion
+path: /workspaces/Mini.Wall-e/EntrenamientoNeuronal/IABasura/dataset/deteccion
 train: images/train
 val: images/val
 names:

@@ -1,38 +1,72 @@
 # VisionArtificial
 
-### Recuerda siempre actualiza la lista de paquetes
-```sudo apt update```
+Este proyecto contiene las herramientas necesarias para preparar datasets, entrenar modelos de detección de objetos con YOLO y realizar pruebas de visión artificial para el robot **Mini.Wall-e**.
 
----
-### Creación de entorno virtual
-Para trabajar es neseario la versión de python 3.12
+## 1. Requisitos
 
-```sudo apt install python3.12-venv``` <br>
+- Python 3.12
+- pip
+- Entorno virtual de Python
+- Git
 
-```python3.12 -m venv venv```
+Se recomienda utilizar Python 3.12 para mantener un entorno compatible con las librerías del proyecto.
 
-```source venv/bin/activate```
+## 2. Actualizar paquetes del sistema
 
----
+En Ubuntu o GitHub Codespaces:
 
-### Modulo CV2 <br>
+```bash
+sudo apt update
+```
 
-Para utilizar el modulo de CV2 es nesesario instalar libgl1. <br>
+## 3. Instalar dependencias del sistema
 
- ```sudo apt install -y libgl1```
+OpenCV puede necesitar la librería `libgl1` en entornos Linux.
 
----
-### Tensorboard <br>
+```bash
+sudo apt install -y python3.12-venv libgl1
+```
 
-```sudo chmod +x tensorboard.sh && ./tensorboard.sh``` <br>
+## 4. Crear el entorno virtual
 
-Para abrir el entorno grafico de como se comportan las redes neuronales.
+Desde la carpeta principal del proyecto:
 
-### tf2onnx
+```bash
+python3.12 -m venv venv
+```
 
-La compilación de modelos densos/convolucionales nesecitan ser transformados, para ello son convertidos a ONNX que son archivos generales como json de las redes neuronales.
+Activar el entorno virtual:
 
-python -m tf2onnx.convert --saved-model <NombreModelo> --output <NombreModelo>.onnx --opset 15
+```bash
+source venv/bin/activate
+```
 
+Actualizar pip:
 
-python -m pip install -U ultralytics tensorboard
+```bash
+python -m pip install --upgrade pip
+```
+
+## 5. Instalar las dependencias de Python
+
+El archivo `requirements.txt` contiene las librerías principales utilizadas por el proyecto.
+
+```bash
+pip install -r requirements.txt
+```
+
+## 6. Conversión de modelos
+
+El proyecto utiliza modelos de YOLO en formato `.pt`.
+
+Ultralytics permite exportar el modelo a otros formatos, como TensorFlow SavedModel y ONNX.
+
+El proyecto cuenta con dos scripts para realizar estas conversiones:
+
+Ubicaciones:
+```
+IABasura/modelos/pt_onnx.py
+```
+```
+IAReconocimientoFacial/modelos/pt_onnx.py
+```
