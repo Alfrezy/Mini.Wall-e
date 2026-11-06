@@ -54,6 +54,52 @@ async function soltarBasura() {
     if (boton) { boton.disabled = false; boton.textContent = "🗑️ Soltar basura"; }
 }
 
+async function saludar() {
+    const boton = document.getElementById('btn-saludar');
+    if (boton) { boton.disabled = true; boton.textContent = "Saludando..."; }
+    try {
+        await fetch(`${URL_ROBOT}/saludar`, { method: 'POST' });
+    } catch (e) {
+        alert("No se pudo conectar con el backend (puerto 9090).");
+    }
+    if (boton) { boton.disabled = false; boton.textContent = "👋 Saludar"; }
+}
+
+// El firmware actual de la ESP32-CAM ya no transmite video: manda fotos al backend.
+// Aquí mostramos la última foto recibida (sirve también para comprobar la orientación de la imagen).
+const fotoCamara = document.getElementById('streamCam');
+function refrescarFoto() {
+    if (fotoCamara) fotoCamara.src = `${URL_ROBOT}/ultima-foto?t=${Date.now()}`;
+}
+refrescarFoto();
+setInterval(refrescarFoto, 1000);
+
+// Pon el objeto a 11 cm de la cámara, centrado, y pulsa el botón: guarda esa distancia como la de recogida.
+async function calibrarDistancia() {
+    try {
+        const res = await fetch(`${URL_ROBOT}/calibrar-distancia`, { method: 'POST' });
+        const d = await res.json();
+        alert(d.status === "SUCCESS"
+            ? `✅ Calibrado con "${d.objeto}".\nBorde inferior medido: ${d.bordeInferiorMedido}\nUmbral nuevo: ${d.umbralNuevo}\n\n${d.mensaje}`
+            : `⚠️ ${d.mensaje}`);
+    } catch (e) {
+        alert("No se pudo conectar con el backend (puerto 9090).");
+    }
+}
+
+// Pon el marcador ArUco frente a la cámara, a la distancia a la que quieres que el robot actúe, y pulsa el botón.
+async function calibrarAruco() {
+    try {
+        const res = await fetch(`${URL_ROBOT}/calibrar-aruco`, { method: 'POST' });
+        const d = await res.json();
+        alert(d.status === "SUCCESS"
+            ? `✅ Calibrado con el marcador ID ${d.marcadorId}.\nAlto medido: ${d.altoMedido}\nUmbral nuevo: ${d.umbralNuevo}\n\n${d.mensaje}`
+            : `⚠️ ${d.mensaje}`);
+    } catch (e) {
+        alert("No se pudo conectar con el backend (puerto 9090).");
+    }
+}
+
 async function refrescarEstado() {
     try {
         const res = await fetch(`${URL_ROBOT}/metricas`);
@@ -68,7 +114,10 @@ async function refrescarEstado() {
                 `Modelo IA: <b>${d.modeloCargado ? '🟢 cargado' : '🔴 no cargado'}</b><br>` +
                 `Estado: <b>${d.estadoActual}</b> · Basura: <b>${d.basuraRecolectada}</b> · Plantas: <b>${d.plantasSembradas}</b><br>` +
                 `Vi: <b>${d.ultimaDeteccion}</b><br>` +
-                `Acción: <b>${d.ultimaAccion}</b>`;
+                `Acción: <b>${d.ultimaAccion}</b><br>` +
+                `ArUco: <b>${d.ultimoAruco}</b> · Visión: <b>${d.visionConectada ? '🟢' : '🔴'}</b><br>` +
+                `Cara: <b>${d.ultimaCara}</b> · Caras: <b>${d.carasConectadas ? '🟢' : '🔴'}</b><br>` +
+                `Umbral de recogida (borde inferior): <b>${d.umbralBordeInferior}</b> · Umbral ArUco (alto): <b>${d.umbralAruco}</b>`;
         }
     } catch (e) {
         const estado = document.getElementById('estado-robot');

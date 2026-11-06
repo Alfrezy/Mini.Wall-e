@@ -13,7 +13,10 @@
     <div class="main-container">
         <!-- Video en vivo de la ESP32-CAM -->
         <div class="video-box" id="videoContainer">
+        <div style="width: 100%; text-align: center;">
             <img id="streamCam" alt="Cámara de Wall-E" style="width: 100%; max-width: 640px; height: auto; border-radius: 5px;" />
+            <div style="font-size: 11px; margin-top: 4px; text-align: center;">📷 Última foto que envió la ESP32-CAM (se actualiza cada segundo)</div>
+        </div>
         </div>
 
         <!-- Panel de control interactivo -->
@@ -27,7 +30,12 @@
                     <button id="btn-modo" class="btn-action" onclick="cambiarModo()">Activar AUTÓNOMO</button>
                     <button id="btn-detener" class="btn-action" style="background: #b91c1c; color: white;" onclick="detenerRobot()">🛑 DETENER</button>
                 </div>
-                <button id="btn-soltar" class="btn-action" style="width: 100%; margin-top: 6px;" onclick="soltarBasura()">🗑️ Soltar basura</button>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-top: 6px;">
+                    <button id="btn-soltar" class="btn-action" onclick="soltarBasura()">🗑️ Soltar basura</button>
+                    <button id="btn-saludar" class="btn-action" onclick="saludar()">👋 Saludar</button>
+                </div>
+                <button id="btn-calibrar" class="btn-action" style="width: 100%; margin-top: 6px;" onclick="calibrarDistancia()">📏 Calibrar 11 cm (objeto centrado a 11 cm)</button>
+                <button id="btn-calibrar-aruco" class="btn-action" style="width: 100%; margin-top: 6px;" onclick="calibrarAruco()">📏 Calibrar ArUco (marcador a la distancia deseada)</button>
                 <div id="estado-robot" style="font-size: 11px; margin-top: 8px; line-height: 1.5;">Conectando con el backend...</div>
             </div>
 
