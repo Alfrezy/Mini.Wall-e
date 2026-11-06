@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   # 1. Base de Datos PostgreSQL
   database:
@@ -40,7 +38,7 @@ services:
     volumes:
       - shared_backups:/app/backups
       - ./dataset_fotos:/app/dataset_fotos
-      - ./EntrenamientoNeuronal/modelos:/app/modelos:ro
+      - ./EntrenamientoNeuronal/IABasura/modelos:/app/modelos:ro
 
   # 3. Servicio de Visión y Red Neuronal (Python + OpenCV + ArUco)
   ai-engine:
