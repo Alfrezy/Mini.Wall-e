@@ -1,16 +1,23 @@
-const URL_BACKEND = "http://localhost:8080/api/robot/metricas";
+// El backend de Java está en el puerto 9090 (el 8080 es el panel manual)
+const URL_BACKEND = "http://localhost:9090/api/robot/metricas";
 const tarjetas = document.querySelectorAll('.card-btn');
 
-function actualizarInterfazPorEstado(estadoServidor) {
-    let indiceProcesoActual = 0; 
+// Qué tarjeta se enciende para cada estado que manda el backend
+const TARJETA_POR_ESTADO = {
+    "PATRULLANDO": 0,
+    "RECOGIENDO_BASURA": 1,
+    "BASURA": 1,
+    "LLEVANDO_BASURA": 1,      // ya recogió la basura y la lleva al depósito
+    "IR_A_SEMBRAR": 2,
+    "PLANTANDO": 2
+};
 
-    if (estadoServidor === "PATRULLANDO" || !estadoServidor) {
-        indiceProcesoActual = 0;
-    } else if (estadoServidor === "RECOGIENDO_BASURA" || estadoServidor === "BASURA") {
-        indiceProcesoActual = 1;
-    } else if (estadoServidor === "IR_A_SEMBRAR" || estadoServidor === "PLANTANDO") {
-        indiceProcesoActual = 2;
-    }
+// El título de la tarjeta 2 cambia si ya la tiene adentro
+const TITULO_BASURA = "Recogiendo Basura";
+const TITULO_LLEVANDO = "Llevando Basura";
+
+function actualizarInterfazPorEstado(estadoServidor) {
+    const indiceProcesoActual = TARJETA_POR_ESTADO[estadoServidor] ?? 0;
 
     tarjetas.forEach((tarjeta, index) => {
         const outerFace = tarjeta.querySelector('.outer-face');
@@ -26,19 +33,24 @@ function actualizarInterfazPorEstado(estadoServidor) {
             if (pacman) pacman.classList.remove('oculto');
         }
     });
+
+    const tituloBasura = document.querySelector('#tarjeta-basura h3');
+    if (tituloBasura) {
+        tituloBasura.textContent = (estadoServidor === "LLEVANDO_BASURA") ? TITULO_LLEVANDO : TITULO_BASURA;
+    }
 }
 
 async function sincronizarEstadoConJava() {
     try {
         const respuesta = await fetch(URL_BACKEND);
         if (!respuesta.ok) throw new Error('No se pudo conectar con el servidor Java');
-        
+
         const datos = await respuesta.json();
         if (datos && datos.estadoActual) {
             actualizarInterfazPorEstado(datos.estadoActual);
         }
     } catch (error) {
-        console.warn("⚠️ Servidor Java no disponible temporalmente. Manteniendo Patrullando por defecto.", error);
+        console.warn("⚠️ Servidor Java no disponible temporalmente. Manteniendo el último estado.", error);
     }
 }
 

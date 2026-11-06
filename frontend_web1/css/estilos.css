@@ -216,88 +216,121 @@ label:before {
     left: calc(2.5rem + 0.2em);
 }
 
-/* ================= PAC-MAN ANIMATION (ALINEADO Y FLUIDO) ================= */
+/* ================= PAC-MAN (mejorado) =================
+   Un solo tamaño controla todo: cambia --pac-size y se escala completo.
+   Cada "mordida" se come exactamente una bolita (misma duración y separación). */
 .pac-man {
-  --primaryClr: #fed75a;
-  --pacman-size: 60px;
+  --pac-size: 60px;
+  --pac-color: #fed75a;
+  --pac-dot: #efefef;
+  --pac-eye: #1c163a;
+  --pac-speed: .6s;
+  --pac-gap: calc(var(--pac-size) * 2 / 3);   /* separación entre bolitas */
+
   position: relative;
+  width: calc(var(--pac-size) * 3);
+  height: var(--pac-size);
   margin: 0 auto;
-  width: var(--pacman-size);
-  height: calc(var(--pacman-size) / 2);
-  border-radius: 100em 100em 0 0;
-  background: var(--primaryClr);
-  transform-origin: bottom;
-  animation: eating-top .5s infinite;
+  overflow: hidden;
 }
 
-.pac-man::before {
-  content: '';
-  display: block;
-  width: var(--pacman-size);
-  height: calc(var(--pacman-size) / 2);
-  background: var(--primaryClr);
-  margin-top: calc(var(--pacman-size) / 2);
+/* Cuerpo: dos mandíbulas (medios círculos) que se abren y se cierran */
+.pac-body {
   position: absolute;
-  transform-origin: top;
-  border-radius: 0 0 100em 100em;
-  transform: rotate(80deg);
-  animation: eating-bottom .5s infinite;
+  inset: 0 auto 0 0;
+  width: var(--pac-size);
+  height: var(--pac-size);
+  z-index: 1;
 }
 
-.pac-man::after {
+.pac-jaw {
   position: absolute;
-  border-radius: 100em;
-  content: '';
-  display: block;
-  height: 12px;
-  width: 12px;
-  /* Centrado exacto a la altura de la boca */
-  top: calc((var(--pacman-size) / 4) - 6px);
   left: 0;
-  transform-origin: center;
-  animation: 
-    center .5s infinite,
-    ball .5s -.33s infinite linear;
+  width: 100%;
+  height: 50%;
+  background: var(--pac-color);
+  will-change: transform;
 }
 
-@keyframes eating-top {
-  0% { transform: rotate(-40deg); }
-  50% { transform: rotate(0deg); }
-  100% { transform: rotate(-40deg); }
+.pac-jaw--top {
+  top: 0;
+  border-radius: calc(var(--pac-size) / 2) calc(var(--pac-size) / 2) 0 0;
+  transform-origin: 50% 100%;
+  animation: pac-boca-arriba var(--pac-speed) ease-in-out infinite;
 }
 
-@keyframes eating-bottom {
-  0% { transform: rotate(80deg); }
-  50% { transform: rotate(0deg); }
-  100% { transform: rotate(80deg); }
+.pac-jaw--bottom {
+  bottom: 0;
+  border-radius: 0 0 calc(var(--pac-size) / 2) calc(var(--pac-size) / 2);
+  transform-origin: 50% 0;
+  animation: pac-boca-abajo var(--pac-speed) ease-in-out infinite;
 }
 
-@keyframes center {
-  0% { transform: rotate(40deg); }
-  50% { transform: rotate(0deg); }
-  100% { transform: rotate(40deg); }
+.pac-eye {
+  position: absolute;
+  top: 17%;
+  left: 55%;
+  width: 12%;
+  height: 12%;
+  border-radius: 50%;
+  background: var(--pac-eye);
+  z-index: 2;
 }
 
-@keyframes ball {
-  0% { 
-    opacity: .8;
-    /* Movimiento en línea recta horizontal saliendo directo de la boca */
-    box-shadow: 
-      45px 0 0 0 var(--primaryClr),
-      80px 0 0 0 var(--primaryClr),
-      115px 0 0 0 var(--primaryClr);
-  }
-  100% { 
-    box-shadow: 
-      15px 0 0 0 var(--primaryClr),
-      45px 0 0 0 var(--primaryClr),
-      80px 0 0 0 var(--primaryClr),
-      115px 0 0 0 var(--primaryClr);
-  }
+/* Bolitas: entran por la derecha y desaparecen dentro de la boca */
+.pac-dots {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: calc(var(--pac-size) * .5);
+  right: 0;
+  overflow: hidden;
+}
+
+.pac-dots i {
+  position: absolute;
+  top: 50%;
+  left: calc(var(--n) * var(--pac-gap));
+  width: calc(var(--pac-size) * .2);
+  height: calc(var(--pac-size) * .2);
+  margin-top: calc(var(--pac-size) * -.1);
+  border-radius: 50%;
+  background: var(--pac-dot);
+  animation: pac-bolitas var(--pac-speed) linear infinite;
+}
+
+.pac-dots i:nth-child(1) { --n: 1; }
+.pac-dots i:nth-child(2) { --n: 2; }
+.pac-dots i:nth-child(3) { --n: 3; }
+.pac-dots i:nth-child(4) { --n: 4; }
+.pac-dots i:nth-child(5) { --n: 5; }
+
+@keyframes pac-boca-arriba {
+  0%, 100% { transform: rotate(0deg); }
+  50%      { transform: rotate(-40deg); }
+}
+
+@keyframes pac-boca-abajo {
+  0%, 100% { transform: rotate(0deg); }
+  50%      { transform: rotate(40deg); }
+}
+
+@keyframes pac-bolitas {
+  from { transform: translateX(0); }
+  to   { transform: translateX(calc(var(--pac-gap) * -1)); }
+}
+
+/* Si la persona pidió menos movimiento en su sistema: Pac-Man quieto con la boca abierta */
+@media (prefers-reduced-motion: reduce) {
+  .pac-jaw, .pac-dots i { animation: none; }
+  .pac-jaw--top    { transform: rotate(-25deg); }
+  .pac-jaw--bottom { transform: rotate(25deg); }
 }
 
 /* ================= MEDIA QUERIES PARA CELULARES ================= */
 @media (max-width: 768px) {
+    .pac-man { --pac-size: 48px; }
+
     .header h1 {
         font-size: 2.2rem;
         letter-spacing: 1px;
