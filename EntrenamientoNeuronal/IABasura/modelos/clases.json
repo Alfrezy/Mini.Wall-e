@@ -1,14 +1,11 @@
 {
-  "clases": [
-    "Caja",
-    "bota",
-    "boteAluminio",
-    "papelHigienico"
-  ],
-  "img_size": [
-    96,
-    96
-  ],
-  "canales": 1,
-  "preprocesado": "EXIF + gris + pad a 96x96 (relleno 128); el modelo incluye Rescaling(1/255)"
+  "modelo": "YOLOv8 (detección de objetos)",
+  "archivo": "CNN_Basura.onnx",
+  "clases": ["Caja", "bota", "boteAluminio", "papelHigienico"],
+  "nota_clases": "El orden es el índice de salida. 'bota' representa la planta; las otras tres son basura.",
+  "img_size": [640, 640],
+  "canales": 3,
+  "entrada": "[1, 3, 640, 640] float32, RGB, valores 0-1 (pixel / 255), formato NCHW",
+  "salida": "[1, 8, 8400] = 4 valores de caja (cx, cy, w, h) + 4 confianzas, una por clase",
+  "preprocesado": "letterbox 640x640 manteniendo la proporción, relleno gris 114"
 }
