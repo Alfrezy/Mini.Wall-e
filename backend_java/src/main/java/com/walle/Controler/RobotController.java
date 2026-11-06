@@ -4,6 +4,7 @@ import com.walle.robot.RobotService;
 import com.walle.robot.RobotService.Modo;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -147,6 +148,28 @@ public class RobotController {
         }
     }
 
+    /** Calibra la distancia de recogida con el objeto puesto a 11 cm de la cámara. */
+    @PostMapping("/calibrar-distancia")
+    public ResponseEntity<Map<String, Object>> calibrarDistancia() {
+        return ResponseEntity.ok(robot.calibrarDistancia());
+    }
+
+    /** Calibra a qué distancia llega el robot a un marcador ArUco. */
+    @PostMapping("/calibrar-aruco")
+    public ResponseEntity<Map<String, Object>> calibrarAruco() {
+        return ResponseEntity.ok(robot.calibrarAruco());
+    }
+
+    /** Saludo: solo los brazos, arriba y abajo. */
+    @PostMapping("/saludar")
+    public ResponseEntity<Map<String, Object>> saludar() {
+        try {
+            return ResponseEntity.ok(robot.saludarManual());
+        } catch (Exception e) {
+            return error(e);
+        }
+    }
+
     @PostMapping("/sembrar-planta")
     public ResponseEntity<Map<String, Object>> sembrarPlanta() {
         try {
@@ -203,6 +226,17 @@ public class RobotController {
             System.err.println("❌ Error ESP32-CAM: " + e.getMessage());
         }
         return null;
+    }
+
+    /** Última foto que mandó la ESP32-CAM (el panel la muestra en lugar del video en vivo). */
+    @GetMapping(value = "/ultima-foto", produces = MediaType.IMAGE_JPEG_VALUE)
+    public ResponseEntity<byte[]> ultimaFoto(@RequestParam(value = "cruda", defaultValue = "false") boolean cruda) {
+        // Por defecto la foto sale con los bounding boxes dibujados; con ?cruda=true sale tal cual llegó
+        byte[] foto = cruda ? robot.getUltimaFoto() : robot.getUltimaFotoAnotada();
+        if (foto == null || foto.length == 0) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok().header("Cache-Control", "no-store").body(foto);
     }
 
     // =========================================================================
