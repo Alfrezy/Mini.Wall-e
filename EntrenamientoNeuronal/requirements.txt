@@ -1,5 +1,13 @@
+# Procesamiento de imágenes
+numpy
+opencv-contrib-python==4.10.0.84
+imutils
+
+# Entrenamiento y redes neuronales
 ultralytics
-Flask
 PyYAML
 tensorboard
 tf2onnx
+
+# Aplicación web
+Flask
